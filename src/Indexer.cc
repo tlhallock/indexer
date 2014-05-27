@@ -14,15 +14,15 @@ void index(file_id file)
 	Tokenizer t{file};
 
 	WordManager &wmanager = get_word_manager();
-	std::unique_ptr<IndexedFile> ifile = get_indexed_file(file);
+	std::shared_ptr<IndexedFile> error_once = get_indexed_file(file);
+	IndexedFile *ifile = error_once.get();
 	ifile->clear();
 
 	const char *token = NULL;
 	while ((token = t.next()) != NULL)
 	{
-		word_id id = wmanager.get_word(token);
-		get_entry(id).add_file(file);
-		ifile->append(id);
+		wmanager.register_entry(token, file);
+		ifile->append(token);
 	}
 
 	ifile->reset_indexed_time();

@@ -10,7 +10,9 @@
 
 #include "IndexEntry.h"
 
-IndexEntry &get_entry(word_id id);
 double query(const char* query);
+
+
+std::shared_ptr<IndexEntry> get_index_entry(const char *token);
 
 #endif

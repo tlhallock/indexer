@@ -7,6 +7,7 @@
 
 #include "Query.h"
 
+#if 0
 Query::Query(const char *query_) : query(query_), index(0) {}
 Query::~Query() {}
 
@@ -24,3 +25,5 @@ word_id Query::next()
 	}
 	return -1;
 }
+
+#endif

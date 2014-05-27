@@ -6,125 +6,219 @@
  */
 
 #include "WordManager.h"
+
 #include "export.h"
 
-static WordManager *manager_ = nullptr;
+Node::Node(Node *parent_, int parents_index_) :
+		size(0),
+		parent(parent_),
+		parents_index(parents_index_)
+{
+	for (int i = 0; i < BTREE_SIZE; i++)
+	{
+		keys[i] = nullptr;
+		children[i] = nullptr;
+	}
+}
 
+Node::~Node()
+{
+	for (int i = 0; i < BTREE_SIZE; i++)
+	{
+		if (keys[i] != nullptr)
+		{
+			free(keys[i]);
+		}
+		if (children[i] != nullptr)
+		{
+			delete children[i];
+		}
+	}
+}
+
+int Node::get_index(const char *query, bool &match) const
+{
+	if (size == 0)
+	{
+		return 0;
+	}
+
+	int cmp = strcmp(query, keys[0]);
+	if (cmp <= 0)
+	{
+		match = cmp == 0;
+		return 0;
+	}
+	cmp = strcmp(query, keys[size-1]);
+	if (cmp >= 0)
+	{
+		match = cmp == 0;
+		return size-1;
+	}
+
+	int max = size - 1;
+	int min = 0;
+
+	while (max > min + 1)
+	{
+		int mid = (max + min) / 2;
+		cmp = strcmp(query, keys[mid]);
+
+		if (cmp == 0)
+		{
+			match = true;
+			return mid;
+		}
+
+		if (cmp < 0)
+		{
+			max = mid;
+		}
+		else
+		{
+			min = mid;
+		}
+	}
+
+	cmp = strcmp(query, keys[min]);
+	if (cmp == 0)
+	{
+		match = true;
+		return min;
+	}
+
+	if (min == max)
+	{
+		match = false;
+		return min;
+	}
+	cmp = strcmp(query, keys[max]);
+	if (cmp == 0)
+	{
+		match = true;
+		return max;
+	}
+
+	match = false;
+	return min;
+}
+
+int Node::get_id() const
+{
+	int acc = 0;
+
+	const Node *c = this;
+	int size = BTREE_SIZE;
+
+	while (c != NULL)
+	{
+		acc += c->parents_index;
+		acc += size;
+
+		size *= BTREE_SIZE;
+		c = c->parent;
+	}
+
+	return acc;
+}
+
+void Node::save() const
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void WordManager::register_entry(const char *token, file_id file)
+{
+	const char *ptr = token;
+	while (*ptr)
+	{
+//		root->insert(ptr);
+		std::shared_ptr<IndexEntry> error_once = get_index_entry(ptr);
+		IndexEntry *entry = error_once.get();
+		entry->add_file(file);
+		ptr++;
+	}
+}
+
+void WordManager::remove_entries(file_id file)
+{
+	std::shared_ptr<IndexedFile> fptr = get_indexed_file(file);
+	IndexedFile *error_once = fptr.get();
+
+	FilesWordIterator it = error_once->get_iterater();
+	const char *str;
+	while ((str = it.next()) != NULL)
+	{
+		while (*str)
+		{
+			std::shared_ptr<IndexEntry> entry = get_index_entry(str);
+			IndexEntry *error_again = entry.get();
+			error_again->remove_file(file);
+			if (error_again->get_num_refs() == 0)
+			{
+//				root->remove(str);
+			}
+			str++;
+		}
+	}
+}
+
+/*
+IndexEntry &search(const char *query)
+{
+	return nullptr;
+}
+*/
+
+
+
+
+
+static WordManager *manager_ = nullptr;
 WordManager& get_word_manager()
 {
 	if (manager_ == nullptr)
 	{
 		manager_ = new WordManager();
-		if (!manager_->read(WORDS_FILE))
-		{
-			char str[2];
-			str[1] = '\0';
-			const int len = strlen(DELIMITERS);
-			for (int i = 0; i < len; i++)
-			{
-				str[0] = DELIMITERS[i];
-				manager_->get_word(str);
-			}
-		}
 	}
 
 	return *manager_;
 }
 
 WordManager::WordManager() :
-			by_word(),
-			by_id() {}
+			root(nullptr) {}
 
-WordManager::~WordManager()
+WordManager::~WordManager() {}
+
+
+
+void create_random_filename(char *out)
 {
-	auto end = by_id.end();
-	for (auto it = by_id.begin(); it != end; ++it)
+	constexpr int len = strlen(VALID_FILENAME_CHARS);
+	for (int i = 0; i < ENTRY_FILENAME_SIZE; i++)
 	{
-		delete *it;
+		out[i] = VALID_FILENAME_CHARS[rand() % len];
 	}
-}
-
-word_id WordManager::get_word(const char* word)
-{
-	auto it = by_word.find(word);
-	if (it != by_word.end())
-	{
-		return it->second;
-	}
-
-	word_id next_id = by_id.size();
-
-	const char *dword = strdup(word);
-
-	by_id.push_back(dword);
-	by_word.insert(std::pair<const char *, word_id>(dword, next_id));
-
-	return next_id;
-}
-
-const char* WordManager::get_word(word_id id)
-{
-	return by_id.at(id);
-}
-
-int WordManager::get_num_words()
-{
-	return by_id.size();
-}
-
-
-size_t WordManager::get_memory()
-{
-	size_t mem = 0;
-
-	auto end = by_id.end();
-	for (auto it = by_id.begin(); it != end; ++it)
-	{
-		mem += strlen((*it));
-	}
-	return mem;
-}
-
-bool WordManager::write(const char *path)
-{
-	DataOutputStream out(path);
-	if (!out.successful())
-	{
-		return false;
-	}
-
-	int size = by_id.size();
-	out.write(size);
-	for (int i = 0; i < size; i++)
-	{
-		out.write(by_id.at(i));
-	}
-
-	return true;
-}
-
-bool WordManager::read(const char *path)
-{
-	DataInputStream in(path);
-	if (!in.successful())
-	{
-		return false;
-	}
-
-	int size = in.read_int();
-	for (int i = 0; i < size; i++)
-	{
-		get_word(in.read_str());
-	}
-	return true;
-}
-
-bool WordManager::word_contains(word_id id, const char *str)
-{
-	return strstr(get_word(id), str) != NULL;
-}
-
-int WordManager::length()
-{
-	return by_id.size();
+	out[ENTRY_FILENAME_SIZE] = '\0';
 }

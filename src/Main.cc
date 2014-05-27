@@ -18,7 +18,6 @@ int main(int argc, char **argv)
 	index_all(".");
 
 	std::cout << "Number of files: " << get_file_manager().get_num_files() << "\n";
-
 	std::cout << "Files containing " << str << ":\n";
 
 	double time = query(str);
@@ -27,7 +26,6 @@ int main(int argc, char **argv)
 	fflush(stdout);
 
 	get_file_manager().write(FILES_FILE);
-	get_word_manager().write(WORDS_FILE);
 
 	return 0;
 }

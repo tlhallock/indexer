@@ -8,6 +8,8 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+//#define __GXX_EXPERIMENTAL_CXX0X__ 1
+
 #include <cstring>
 #include <ctime>
 #include <iostream>
@@ -19,6 +21,7 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <bits/shared_ptr.h>
 
 struct ConstCharComparator
 {
@@ -31,9 +34,10 @@ struct ConstCharComparator
 #define DELIMITERS  ".!@#$%^&*()_+-={}|[];':\",.<>/?\\ \t\n\r^`~"
 #define MAX_UNREADABLE .1
 
-#define FILE_LIST_PATTERN "/home/thallock/.indexes/file_lists/%d"
+#define FILE_LIST_PATTERN "/home/thallock/.indexes/file_lists/%ld.%d"
 #define FILE_INDEX_PATTERN "/home/thallock/.indexes/indices/%d"
 #define WORDS_FILE "/home/thallock/.indexes/words"
 #define FILES_FILE "/home/thallock/.indexes/files"
+
 
 #endif /* COMMON_H_ */

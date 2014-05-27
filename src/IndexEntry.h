@@ -11,21 +11,41 @@
 #include "FileManager.h"
 #include "WordManager.h"
 
+class IndexEntryIterater
+{
+public:
+	IndexEntryIterater(const char *word);
+	~IndexEntryIterater();
+
+	file_id next();
+	int get_num_left();
+private:
+	int num_left;
+	FILE *in;
+};
+
 class IndexEntry
 {
-	word_id entry;
-	std::set<file_id> files;
 public:
-	IndexEntry(word_id word);
+	IndexEntry(const char *word);
 	virtual ~IndexEntry();
 
 	void add_file(file_id file);
 	void remove_file(file_id file);
 
-	bool contains(const char *query) const;
 	void print_list() const;
+	long hash_code() const;
+
+	bool unused();
 
 	void save();
+	void get_file(char *out_path);
+
+	int get_num_refs();
+private:
+
+	const char *entry;
+	std::set<file_id> files;
 };
 
 #endif /* INDEXENTRY_H_ */

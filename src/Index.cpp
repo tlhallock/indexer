@@ -9,59 +9,56 @@
 #include "export.h"
 
 #define ENTRY_CACHE_SIZE 10
-static std::map<word_id, IndexEntry *> entry_cache;
 
-IndexEntry &get_entry(word_id id)
+static std::map<const char *, std::shared_ptr<IndexEntry> > entry_cache;
+
+std::shared_ptr<IndexEntry> get_index_entry(const char *token)
 {
-	auto it = entry_cache.find(id);
+	auto it = entry_cache.find(token);
 	if (it != entry_cache.end())
 	{
-		return *it->second;
+		return it->second;
 	}
 
 	if (entry_cache.size() > ENTRY_CACHE_SIZE)
 	{
 		// should find a better one...
-		auto it = entry_cache.begin();
-		delete it->second;
-		entry_cache.erase(it);
+		entry_cache.erase(entry_cache.begin());
 	}
 
-
-	IndexEntry *ret = new IndexEntry(id);
-	entry_cache.insert(std::pair<word_id, IndexEntry *> (id, ret));
-
+	IndexEntry *e = new IndexEntry(token);
+	std::shared_ptr<IndexEntry> ret(e);
+	entry_cache.insert(std::pair<const char *, std::shared_ptr<IndexEntry> > (token, ret));
 
 	char buff[256];
-	sprintf(buff, FILE_LIST_PATTERN, id);
+	e->get_file(buff);
 
 	DataInputStream in(buff);
 	if (!in.successful())
 	{
-		return *ret;
+		return ret;
 	}
 
 	int len = in.read_int();
 	for (int i = 0; i < len; i++)
 	{
-		ret->add_file(in.read_int());
+		e->add_file(in.read_int());
 	}
 
-	return *ret;
+	return ret;
 }
 
 double query(const char* query)
 {
 	clock_t start_time = clock();
 
-	Query q(query);
-
-	word_id id;
-	while( (id = q.next()) >= 0)
-	{
-		IndexEntry &entry = get_entry(id);
-		entry.print_list();
-	}
+//	Query q(query);
+//
+//	while( (id = q.next()) >= 0)
+//	{
+//		IndexEntry &entry = get_entry(id);
+//		entry.print_list();
+//	}
 
 	return 1000.0 * (clock() - start_time) / CLOCKS_PER_SEC;
 }

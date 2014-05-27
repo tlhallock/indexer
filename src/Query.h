@@ -16,7 +16,7 @@ public:
 	Query(const char *query);
 	virtual ~Query();
 
-	word_id next();
+	const char *next();
 private:
 	const char *query;
 	int index;

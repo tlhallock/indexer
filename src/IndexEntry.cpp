@@ -10,7 +10,7 @@
 #include "export.h"
 
 
-IndexEntry::IndexEntry(word_id entry_) :
+IndexEntry::IndexEntry(const char *entry_) :
 	entry(entry_),
 	files() {}
 
@@ -29,11 +29,6 @@ void IndexEntry::remove_file(file_id file)
 	files.erase(files.find(file));
 }
 
-bool IndexEntry::contains(const char* query) const
-{
-	return strstr(get_word_manager().get_word(entry), query) != NULL;
-}
-
 void IndexEntry::print_list() const
 {
 	auto end = files.end();
@@ -46,7 +41,13 @@ void IndexEntry::print_list() const
 void IndexEntry::save()
 {
 	char buff[256];
-	sprintf(buff, FILE_LIST_PATTERN, entry);
+	get_file(buff);
+
+	if (get_num_refs() == 0)
+	{
+		// delete file...
+		return;
+	}
 
 	DataOutputStream out(buff);
 	if (!out.successful())
@@ -64,9 +65,47 @@ void IndexEntry::save()
 	}
 }
 
+long IndexEntry::hash_code() const
+{
+	long ret = 0;
+	long acc = 1;
+
+	const char *ptr = entry;
+	while (*ptr)
+	{
+		ret += acc * *ptr;
+		acc *= 31;
+
+		++ptr;
+	}
+
+	return ret;
+}
 
 
+void IndexEntry::get_file(char *out_path)
+{
+	int collision_count = 0;
+	long hash = hash_code();
 
+	bool match = false;
+	do
+	{
+		sprintf(out_path, FILE_LIST_PATTERN, hash, collision_count++);
+		DataInputStream in(out_path);
+		if (!in.successful())
+		{
+			return;
+		}
+		char *token = in.read_str();
+		match = strcmp(token, entry);
+		free(token);
+	} while (match);
+}
 
+int IndexEntry::get_num_refs()
+{
+	return files.size();
+}
 
 

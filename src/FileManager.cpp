@@ -31,7 +31,7 @@ FileManager::~FileManager()
 	auto end = by_id.end();
 	for (auto it = by_id.begin(); it != end; ++it)
 	{
-		delete *it;
+		delete it->second;
 	}
 }
 
@@ -47,7 +47,7 @@ file_id FileManager::get_id(const char* path)
 
 	const char *dpath = strdup(path);
 
-	by_id.push_back(dpath);
+	by_id.insert(std::pair<file_id, const char *>(next_id, dpath));
 	by_path.insert(std::pair<const char *, file_id>(dpath, next_id));
 
 	return next_id;
@@ -76,7 +76,7 @@ size_t FileManager::get_memory()
 	auto end = by_id.end();
 	for (auto it = by_id.begin(); it != end; ++it)
 	{
-		memory += strlen(*it);
+		memory += strlen(it->second);
 	}
 
 	return memory;

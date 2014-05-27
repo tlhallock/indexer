@@ -30,7 +30,7 @@ public:
 
 private:
 	std::map<const char *, file_id, ConstCharComparator> by_path;
-	std::vector<const char *> by_id;
+	std::map<file_id, const char *> by_id;
 };
 
 FileManager &get_file_manager();
