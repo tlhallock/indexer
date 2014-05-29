@@ -29,3 +29,31 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+
+#if 0
+
+
+const char *str = "'foobar:{}_@^$*(_^LKSHEG(P&$PHLKGJLSDGsgsdg./1`";
+
+//	void escape(const char *in, char *&out, int &out_size);
+//	void descape(const char *in, char *out, int &out_size);
+
+printf("%s\n", str);
+
+
+char *ptr = nullptr;
+int size = 0;
+
+escape(str, ptr, size);
+
+printf("%s\n", ptr);
+
+char *ptr2 = nullptr;
+int size2 = 0;
+
+descape(ptr, ptr2, size2);
+
+printf("%s\n", ptr2);
+
+
+#endif

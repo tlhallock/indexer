@@ -7,7 +7,9 @@
 
 #include "DataOutputStream.h"
 
-#include "common.h"
+#include <cstring>
+#include <stdlib.h>
+
 
 DataOutputStream::DataOutputStream(const char *path) :
 		file(fopen(path, "w")), success(file != nullptr) {}
@@ -59,10 +61,10 @@ int DataInputStream::read_int()
 {
 	int i = 0;
 
-	i |= (fgetc(file) <<  0) & 0xff;
-	i |= (fgetc(file) <<  8) & 0xff;
-	i |= (fgetc(file) << 16) & 0xff;
-	i |= (fgetc(file) << 24) & 0xff;
+	i |= (fgetc(file) & 0xff) <<  0;
+	i |= (fgetc(file) & 0xff) <<  8;
+	i |= (fgetc(file) & 0xff) << 16;
+	i |= (fgetc(file) & 0xff) << 24;
 
 	return i;
 }

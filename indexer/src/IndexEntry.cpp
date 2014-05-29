@@ -40,21 +40,26 @@ void IndexEntry::print_list() const
 
 void IndexEntry::save()
 {
-	char buff[256];
-	get_file(buff);
+	char *buff = get_file();
+	if (buff == nullptr)
+	{
+		return;
+	}
 
 	if (get_num_refs() == 0)
 	{
 		// delete file...
+		free(buff);
 		return;
 	}
 
 	DataOutputStream out(buff);
 	if (!out.successful())
 	{
-		printf("Can't open %s for saving!\n", buff);
+		printf("Can't open '%s' for saving!\n", buff);
 		exit(1);
 	}
+	free(buff);
 
 	out.write(files.size());
 
@@ -83,8 +88,10 @@ long IndexEntry::hash_code() const
 }
 
 
-void IndexEntry::get_file(char *out_path)
+char *IndexEntry::get_file()
 {
+
+	/*
 	int collision_count = 0;
 	long hash = hash_code();
 
@@ -101,6 +108,26 @@ void IndexEntry::get_file(char *out_path)
 		match = strcmp(token, entry);
 		free(token);
 	} while (match);
+	*/
+
+	if (*entry == '\0')
+	{
+		return nullptr;
+	}
+
+	const char *prefix = "/home/thallock/.indexer/file_lists/";
+
+	char *ret_val = nullptr;
+	int len = 0;
+	escape(entry, ret_val, len);
+
+
+	char *ret = (char *)malloc(strlen(prefix) + strlen(entry) + 1);
+	sprintf(ret, "%s%s", prefix, entry);
+
+	free(ret_val);
+
+	return ret;
 }
 
 int IndexEntry::get_num_refs()

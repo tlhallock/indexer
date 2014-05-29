@@ -16,6 +16,7 @@
 #include <cstring>
 #include <stdlib.h>
 #include <stdio.h>
+#include <climits>
 
 #include <set>
 #include <map>
@@ -31,6 +32,9 @@ struct ConstCharComparator
    }
 };
 
+void escape(const char *in, char *&out, int &out_size);
+void descape(const char *in, char *&out, int &out_size);
+
 #define DELIMITERS  ".!@#$%^&*()_+-={}|[];':\",.<>/?\\ \t\n\r^`~"
 #define MAX_UNREADABLE .1
 
@@ -38,6 +42,5 @@ struct ConstCharComparator
 #define FILE_INDEX_PATTERN "/home/thallock/.indexes/indices/%d"
 #define WORDS_FILE "/home/thallock/.indexes/words"
 #define FILES_FILE "/home/thallock/.indexes/files"
-
 
 #endif /* COMMON_H_ */

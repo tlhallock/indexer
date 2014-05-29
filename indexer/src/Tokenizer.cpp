@@ -119,9 +119,16 @@ const char *Tokenizer::next()
 		{
 			if (index == 0)
 			{
-				buff[0] = c;
-				buff[1] = '\0';
-				return buff;
+				if (alpha)
+				{
+					continue;
+				}
+				else
+				{
+					buff[0] = c;
+					buff[1] = '\0';
+					return buff;
+				}
 			}
 			else
 			{
@@ -132,7 +139,6 @@ const char *Tokenizer::next()
 
 		ensure(index + 2);
 		buff[index++] = c;
-		unreadable = 0;
 	}
 
 	puts("Shouldn't get here!!! 2875942870924");

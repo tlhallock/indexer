@@ -39,7 +39,7 @@ public:
 	bool unused();
 
 	void save();
-	void get_file(char *out_path);
+	char *get_file();
 
 	int get_num_refs();
 private:

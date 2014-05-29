@@ -30,12 +30,12 @@ std::shared_ptr<IndexEntry> get_index_entry(const char *token)
 	std::shared_ptr<IndexEntry> ret(e);
 	entry_cache.insert(std::pair<const char *, std::shared_ptr<IndexEntry> > (token, ret));
 
-	char buff[256];
-	e->get_file(buff);
+	char *buff = e->get_file();
 
 	DataInputStream in(buff);
 	if (!in.successful())
 	{
+		free(buff);
 		return ret;
 	}
 
@@ -45,6 +45,7 @@ std::shared_ptr<IndexEntry> get_index_entry(const char *token)
 		e->add_file(in.read_int());
 	}
 
+	free(buff);
 	return ret;
 }
 
