@@ -8,10 +8,13 @@
 #ifndef HASH_H_
 #define HASH_H_
 
-#define NUM_HASHES 5
-constexpr int primes[NUM_HASHES] {757, 773, 829, 599, 467};
+#include <cstring>
 
-void get_file(const char *dir, const char *key, char *out);
+constexpr int NUM_HASHES = 5;
+constexpr int primes[NUM_HASHES] = {757, 773, 829, 599, 467};
+constexpr int NUM_MAX_HASH_CHARS = (NUM_HASHES * strlen("0x7FFFFFFFL") + /* for collision count.*/ strlen("0x7FFFL"));
+
+char *get_file_or_dir(const char *dir, const char *key, bool is_dir);
 
 class Hash
 {

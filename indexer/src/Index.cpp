@@ -38,6 +38,9 @@ std::shared_ptr<IndexEntry> get_index_entry(const char *token)
 		free(buff);
 		return ret;
 	}
+	free(buff);
+
+	free(in.read_str());
 
 	int len = in.read_int();
 	for (int i = 0; i < len; i++)
@@ -45,13 +48,31 @@ std::shared_ptr<IndexEntry> get_index_entry(const char *token)
 		e->add_file(in.read_int());
 	}
 
-	free(buff);
 	return ret;
 }
 
 double query(const char* query)
 {
 	clock_t start_time = clock();
+
+	FileManager &manager = get_file_manager();
+
+	IndexEntryIterater it(query);
+
+	while (it.has_next())
+	{
+		file_id file = it.next();
+		OccuranceIterator occurances(file, query);
+
+		while (occurances.has_next())
+		{
+			int offset = occurances.next();
+			printf("file %s offset %d\n", manager.get_path(file), offset);
+		}
+	}
+
+
+
 
 //	Query q(query);
 //

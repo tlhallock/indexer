@@ -32,15 +32,12 @@ struct ConstCharComparator
    }
 };
 
-void escape(const char *in, char *&out, int &out_size);
-void descape(const char *in, char *&out, int &out_size);
-
 #define DELIMITERS  ".!@#$%^&*()_+-={}|[];':\",.<>/?\\ \t\n\r^`~"
 #define MAX_UNREADABLE .1
 
-#define FILE_LIST_PATTERN "/home/thallock/.indexes/file_lists/%ld.%d"
-#define FILE_INDEX_PATTERN "/home/thallock/.indexes/indices/%d"
-#define WORDS_FILE "/home/thallock/.indexes/words"
-#define FILES_FILE "/home/thallock/.indexes/files"
+#define BASE_DIR "/home/thallock/.indexes"
+#define WORDS_BASE_DIR "/home/thallock/.indexes/words.d"
+#define FILES_BASE_DIR "/home/thallock/.indexes/files.d"
+#define FILES_FILE "/home/thallock/.indexes/files.txt"
 
 #endif /* COMMON_H_ */

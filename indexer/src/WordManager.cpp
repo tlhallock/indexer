@@ -40,8 +40,10 @@ void WordManager::register_entry(const char *token, file_id file)
 
 void WordManager::remove_entries(file_id file)
 {
-	std::shared_ptr<IndexedFile> fptr = get_indexed_file(file);
-	IndexedFile *error_once = fptr.get();
+
+#if 0
+	std::shared_ptr<TmpIndexedFile> fptr = get_indexed_file(file);
+	TmpIndexedFile *error_once = fptr.get();
 
 	FilesWordIterator it = error_once->get_iterater();
 	const char *str;
@@ -59,6 +61,7 @@ void WordManager::remove_entries(file_id file)
 			str++;
 		}
 	}
+#endif
 }
 
 /*

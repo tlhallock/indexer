@@ -9,9 +9,7 @@
 
 int main(int argc, char **argv)
 {
-//	mkdir("/home/thallock/.indexes/");
-//	mkdir("/home/thallock/.indexes/file_lists/");
-//	mkdir( "/home/thallock/.indexes/files/");
+	delete_file(BASE_DIR);
 
 	const char *str = "foo";
 

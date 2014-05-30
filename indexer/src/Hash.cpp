@@ -7,6 +7,7 @@
 
 #include "Hash.h"
 
+#include "export.h"
 
 #define MAX_PRIME 2147483629
 
@@ -17,7 +18,7 @@ Hash::Hash(const char *key)
 
 	for (int i = 0; i < NUM_HASHES; i++)
 	{
-		hashes[i] = 0;
+		hashes[i] = 1804289383;  // <- random number
 		accs[i] = primes[i];
 	}
 
@@ -41,34 +42,44 @@ void Hash::print(char *out, int collision_num)
 {
 	out[0] = '\0';
 
-	char buff[265];
+	char buff[NUM_MAX_HASH_CHARS];
 	for (int i = 0; i < NUM_HASHES; i++)
 	{
-		sprintf(buff, "%ld.", hashes[i]);
+		sprintf(buff, "%x.", hashes[i]);
 		strcat(out, buff);
 	}
 
-	sprintf(buff, "%d", collision_num);
+	sprintf(buff, "%x", collision_num);
 	strcat(out, buff);
 }
 
-void get_file(const char *dir, const char *key, char *out)
+char *get_file_or_dir(const char *dir, const char *key, bool is_dir)
 {
 	int collision_count = 0;
 	Hash h(key);
-	char fname[256];
+	char fname[NUM_MAX_HASH_CHARS];
+
+	char *out = (char *) malloc (sizeof(*out) * (strlen(dir) + 1 + NUM_MAX_HASH_CHARS + 5 + 1));
+	out[0] = '\0';
 
 	bool match = false;
 	do
 	{
 		h.print(fname, collision_count++);
 
-		sprintf(out, "%s/%s", dir, fname);
+		if (is_dir)
+		{
+			sprintf(out, "%s/%s/index", dir, fname);
+		}
+		else
+		{
+			sprintf(out, "%s/%s", dir, fname);
+		}
 
 		DataInputStream in(out);
 		if (!in.successful())
 		{
-			return;
+			break;
 		}
 		char *token = in.read_str();
 		match = strcmp(token, key);
@@ -80,4 +91,9 @@ void get_file(const char *dir, const char *key, char *out)
 		puts("56109760539706531976531");
 		exit(0);
 	}
+
+	sprintf(out, "%s/%s", dir, fname);
+
+	return out;
 }
+

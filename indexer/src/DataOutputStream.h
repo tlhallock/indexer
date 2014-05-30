@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 
+#define HUMAN_READABLE 1
+
 class DataOutputStream
 {
 public:
@@ -18,6 +20,7 @@ public:
 
 	void write(int i);
 	void write(const char *str);
+	void write(long int i);
 
 	bool successful();
 private:
@@ -33,6 +36,7 @@ public:
 
 	int read_int();
 	char *read_str();
+	long int read_long();
 
 	bool successful();
 private:

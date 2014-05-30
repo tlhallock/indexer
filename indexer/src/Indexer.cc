@@ -14,22 +14,27 @@ void index(file_id file)
 	Tokenizer t{file};
 
 	WordManager &wmanager = get_word_manager();
-	std::shared_ptr<IndexedFile> error_once = get_indexed_file(file);
-	IndexedFile *ifile = error_once.get();
-	ifile->clear();
+
+	TmpIndexedFile ifile(file);
+	if (!ifile.needs_reindex())
+	{
+		return;
+	}
+
+	ifile.clear();
 
 	const char *token = NULL;
 	while ((token = t.next()) != NULL)
 	{
-		if (token[0] == 'f' && token[1] == 'o' && token[2] == 'o' && token[3] == '\0')
-		{
-			printf("File %d contains '%s'\n", file, token);
-		}
+//		if (token[0] == 'f' && token[1] == 'o' && token[2] == 'o' && token[3] == '\0')
+//		{
+//			printf("File %d contains '%s'\n", file, token);
+//		}
 		wmanager.register_entry(token, file);
-		ifile->append(token);
+		ifile.append(token);
 	}
 
-	ifile->reset_indexed_time();
+	ifile.save();
 }
 
 static void index_function(int len, const char *path)

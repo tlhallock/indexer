@@ -10,6 +10,7 @@
 
 #include "FileManager.h"
 #include "WordManager.h"
+#include "DataOutputStream.h"
 
 class IndexEntryIterater
 {
@@ -17,11 +18,12 @@ public:
 	IndexEntryIterater(const char *word);
 	~IndexEntryIterater();
 
+	bool has_next() const;
 	file_id next();
-	int get_num_left();
+	int get_num_left() const;
 private:
 	int num_left;
-	FILE *in;
+	DataInputStream *in;
 };
 
 class IndexEntry
@@ -36,12 +38,12 @@ public:
 	void print_list() const;
 	long hash_code() const;
 
-	bool unused();
+	bool is_unused() const;
 
-	void save();
-	char *get_file();
+	void save() const;
+	char *get_file() const;
 
-	int get_num_refs();
+	int get_num_refs() const;
 private:
 
 	const char *entry;

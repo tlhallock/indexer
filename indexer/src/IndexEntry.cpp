@@ -38,7 +38,12 @@ void IndexEntry::print_list() const
 	}
 }
 
-void IndexEntry::save()
+char *IndexEntry::get_file() const
+{
+	return get_file_or_dir(WORDS_BASE_DIR, entry, false);
+}
+
+void IndexEntry::save() const
 {
 	char *buff = get_file();
 	if (buff == nullptr)
@@ -48,7 +53,7 @@ void IndexEntry::save()
 
 	if (get_num_refs() == 0)
 	{
-		// delete file...
+		delete_file(buff);
 		free(buff);
 		return;
 	}
@@ -61,7 +66,8 @@ void IndexEntry::save()
 	}
 	free(buff);
 
-	out.write(files.size());
+	out.write(entry);
+	out.write((int) files.size());
 
 	auto end = files.end();
 	for (auto it = files.begin(); it != end; ++it)
@@ -87,52 +93,74 @@ long IndexEntry::hash_code() const
 	return ret;
 }
 
-
-char *IndexEntry::get_file()
-{
-
-	/*
-	int collision_count = 0;
-	long hash = hash_code();
-
-	bool match = false;
-	do
-	{
-		sprintf(out_path, FILE_LIST_PATTERN, hash, collision_count++);
-		DataInputStream in(out_path);
-		if (!in.successful())
-		{
-			return;
-		}
-		char *token = in.read_str();
-		match = strcmp(token, entry);
-		free(token);
-	} while (match);
-	*/
-
-	if (*entry == '\0')
-	{
-		return nullptr;
-	}
-
-	const char *prefix = "/home/thallock/.indexer/file_lists/";
-
-	char *ret_val = nullptr;
-	int len = 0;
-	escape(entry, ret_val, len);
-
-
-	char *ret = (char *)malloc(strlen(prefix) + strlen(entry) + 1);
-	sprintf(ret, "%s%s", prefix, entry);
-
-	free(ret_val);
-
-	return ret;
-}
-
-int IndexEntry::get_num_refs()
+int IndexEntry::get_num_refs() const
 {
 	return files.size();
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+IndexEntryIterater::IndexEntryIterater(const char *word) :
+		num_left(0), in(nullptr)
+{
+	char *path = get_file_or_dir(WORDS_BASE_DIR, word, false);
+	if (path == nullptr)
+	{
+		return;
+	}
+
+	in = new DataInputStream(path);
+	if (!in->successful())
+	{
+		delete in;
+		in = nullptr;
+		return;
+	}
+
+	in->read_str();
+	num_left = in->read_int();
+
+	free(path);
+}
+
+IndexEntryIterater::~IndexEntryIterater()
+{
+	if (in == nullptr)
+	{
+		return;
+	}
+
+	delete in;
+}
+
+bool IndexEntryIterater::has_next() const
+{
+	return num_left > 0;
+}
+
+file_id IndexEntryIterater::next()
+{
+	if (!has_next())
+	{
+		return -1;
+	}
+
+	--num_left;
+	return in->read_int();
+}
+
+int IndexEntryIterater::get_num_left() const
+{
+	return num_left;
+}
