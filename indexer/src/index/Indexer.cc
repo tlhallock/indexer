@@ -20,7 +20,7 @@ void index(const char *path)
 		return;
 	}
 
-	TmpIndexedFile accum(&ifile);
+	WordAccumulator accum(&ifile);
 
 	Tokenizer t{file};
 	const char *token = NULL;

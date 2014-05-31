@@ -15,15 +15,8 @@
 class WordAccumulator
 {
 public:
-	WordAccumulator();
+	WordAccumulator(IndexedFile *f);
 	virtual ~WordAccumulator();
-};
-
-class TmpIndexedFile
-{
-public:
-	TmpIndexedFile(IndexedFile *f);
-	virtual ~TmpIndexedFile();
 
 	void append(const char *token, int offset);
 	void save() const;

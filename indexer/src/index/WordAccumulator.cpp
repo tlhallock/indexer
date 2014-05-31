@@ -9,7 +9,7 @@
 
 #include "include/export.h"
 
-TmpIndexedFile::TmpIndexedFile(IndexedFile *f) :
+WordAccumulator::WordAccumulator(IndexedFile *f) :
 	file(f),
 	read_time(-1),
 	words(),
@@ -18,7 +18,7 @@ TmpIndexedFile::TmpIndexedFile(IndexedFile *f) :
 	time(&read_time);
 }
 
-TmpIndexedFile::~TmpIndexedFile()
+WordAccumulator::~WordAccumulator()
 {
 	auto oend = orders.end();
 	for (auto it = orders.begin(); it != oend; ++it)
@@ -32,7 +32,7 @@ TmpIndexedFile::~TmpIndexedFile()
 	}
 }
 
-std::set<int> *TmpIndexedFile::get_index(const char *word)
+std::set<int> *WordAccumulator::get_index(const char *word)
 {
 	auto it = words.find(word);
 	if (it != words.end())
@@ -50,12 +50,12 @@ std::set<int> *TmpIndexedFile::get_index(const char *word)
 	return ret_val;
 }
 
-void TmpIndexedFile::append(const char *token, int offset)
+void WordAccumulator::append(const char *token, int offset)
 {
 	get_index(token)->insert(offset);
 }
 
-void TmpIndexedFile::save() const
+void WordAccumulator::save() const
 {
 	auto wend = words.end();
 	for (auto wit = words.begin(); wit != wend; ++wit)
