@@ -55,6 +55,11 @@ void Hash::print(char *out, int collision_num)
 
 char *get_file_or_dir(const char *dir, const char *key, bool is_dir)
 {
+	if (!*dir || !*key)
+	{
+		return nullptr;
+	}
+
 	int collision_count = 0;
 	Hash h(key);
 	char fname[NUM_MAX_HASH_CHARS];

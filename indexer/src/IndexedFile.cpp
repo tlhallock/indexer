@@ -9,226 +9,63 @@
 
 #include "export.h"
 
-FilesWordIterator::FilesWordIterator(std::map<const char *, int> &words) :
-		end(words.end()), it(words.begin()) {}
+#define META_FILE "index"
 
-FilesWordIterator::~FilesWordIterator() {}
-
-const char *FilesWordIterator::next()
-{
-	if (it == end)
-	{
-		return nullptr;
-	}
-
-	return (it++)->first;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-TmpIndexedFile::TmpIndexedFile(file_id file_) :
+IndexedFile::IndexedFile(file_id file_) :
 	file(file_),
-	read_time(0),
-	current_tokens(0),
-	words(),
-	orders()
+	real_path(get_file_manager().get_path(file)),
+	base_dir(get_file_or_dir(FILES_BASE_DIR, real_path, true)),
+	index_path(get_file_or_dir(base_dir, META_FILE, false)) {}
+
+IndexedFile::~IndexedFile()
 {
-	time(&read_time);
+	free((char *)base_dir);
+	free((char *)index_path);
 }
 
-TmpIndexedFile::~TmpIndexedFile()
+void IndexedFile::clear()
 {
-//	save();
-	free_mem();
+	delete_file(base_dir);
 }
 
-void TmpIndexedFile::append(const char *token)
+const char *IndexedFile::get_index_path() const
 {
-	auto it = words.find(token);
-
-	int index;
-	if (it == words.end())
-	{
-		index = orders.size();
-		words.insert(std::pair<const char *, int> (strdup(token), index));
-		orders.push_back(new std::set<int>);
-	}
-	else
-	{
-		index = it->second;
-	}
-
-	orders.at(index)->insert(current_tokens++);
+	return base_dir;
+}
+const char *IndexedFile::get_index_attr_path() const
+{
+	return index_path;
 }
 
-void TmpIndexedFile::free_mem()
+time_t IndexedFile::get_last_indexed_time() const
 {
-	auto oend = orders.end();
-	for (auto it = orders.begin(); it != oend; ++it)
-	{
-		delete *it;
-	}
-	auto wend = words.end();
-	for (auto it = words.begin(); it != wend; ++it)
-	{
-		delete it->first;
-	}
-
-	words.clear();
-	orders.clear();
+	DataInputStream in(index_path);
+	in.read_str(); // throw file name away
+	return in.read_long();
 }
 
-void TmpIndexedFile::clear()
+bool IndexedFile::needs_reindex() const
 {
-	free_mem();
-
-	current_tokens = 0;
-
-	char *filename = get_index_path();
-	delete_file(filename);
-	free(filename);
+	return get_last_write_time(real_path) >= get_last_indexed_time();
 }
 
-char *TmpIndexedFile::get_index_path() const
-{
-	const char *real_path = get_file_manager().get_path(file);
-	return get_file_or_dir(FILES_BASE_DIR, real_path, true);
-}
 
-void TmpIndexedFile::save() const
-{
-	const char *path = get_file_manager().get_path(file);
 
-	std::cout << "Saving index for " << path << std::endl;
 
-	const char *file_dir = get_index_path();
-	if (file_dir == nullptr)
-	{
-		std::cout << "Unable to find " << file << "'s for writing\n";
-		return;
-	}
 
-	auto wend = words.end();
-	for (auto wit = words.begin(); wit != wend; ++wit)
-	{
-		const char *key = wit->first;
-		char *key_file = get_file_or_dir(file_dir, key, false);
-		if (key_file == nullptr)
-		{
-			puts("Failure 510975610356");
-			continue;
-		}
 
-		DataOutputStream out(key_file);
-		if (!out.successful())
-		{
-			std::cout << "Unable to open " << key_file << " for writing\n";
-			continue;
-		}
-		free(key_file);
 
-		std::set<int> &s = *orders.at(wit->second);
 
-		out.write(key);
-		out.write((int) s.size());
 
-		auto send = s.end();
-		for(auto sit = s.begin(); sit != send; ++sit)
-		{
-			int offset = *sit;
-			out.write(offset);
-		}
-	}
 
-	{
-		char *index_file = (char *) malloc (strlen (file_dir) + 1 + 5 + 1);
-		sprintf(index_file, "%s/index", file_dir);
 
-		DataOutputStream o(index_file);
-		o.write(path);
-//		o.write(last_indexed_time);
 
-		free(index_file);
-	}
 
-	free((void *) file_dir);
-}
 
-time_t TmpIndexedFile::get_last_indexed_time() const
-{
-	const char *file_dir = get_index_path();
-	if (file_dir == nullptr)
-	{
-		return (time_t) -1;
-	}
 
-	char *index_file = (char *) malloc(strlen(file_dir) + 1 + 5 + 1);
-	sprintf(index_file, "%s/index", file_dir);
-	free((void *) file_dir);
 
-	time_t last_indexed_time = get_last_write_time(index_file);
 
-	free(index_file);
 
-	return last_indexed_time;
-}
-
-bool TmpIndexedFile::needs_reindex() const
-{
-	const char *path = get_file_manager().get_path(file);
-	char *index_path = get_index_path();
-
-	time_t last_file_modification = get_last_write_time(path);
-	time_t last_index = get_last_indexed_time();
-
-	free(index_path);
-
-	return last_file_modification >= last_index;
-}
-
-#if 0
-std::shared_ptr<TmpIndexedFile> get_indexed_file(file_id file)
-{
-	char buff[256];
-	sprintf(buff, FILE_INDEX_PATTERN, file);
-
-	TmpIndexedFile *ifile = new TmpIndexedFile(file);
-	std::shared_ptr<TmpIndexedFile> ret(ifile);
-
-	DataInputStream in(buff);
-	if (!in.successful())
-	{
-		return ret;
-	}
-
-	int length = in.read_int();
-	for (int i = 0; i < length; i++)
-	{
-//		ifile->append(in.read_str());
-	}
-
-	return ret;
-}
-#endif
-
-#if 0
-FilesWordIterator &TmpIndexedFile::get_iterater() const
-{
-	return *(new FilesWordIterator(words));
-}
-#endif
 
 OccuranceIterator::OccuranceIterator(file_id file, const char *key)
 	: num(0), count(0), in(nullptr)
