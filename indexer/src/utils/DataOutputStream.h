@@ -8,7 +8,7 @@
 #ifndef DATAOUTPUTSTREAM_H_
 #define DATAOUTPUTSTREAM_H_
 
-#include <stdio.h>
+#include "include/common.h"
 
 #define HUMAN_READABLE 1
 

@@ -5,7 +5,7 @@
  *      Author: thallock
  */
 
-#include "Tokenizer.h"
+#include "include/export.h"
 
 #define INITIAL_BUFFER_SIZE 256
 

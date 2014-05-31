@@ -5,9 +5,9 @@
  *      Author: thallock
  */
 
-#include "DataOutputStream.h"
+#include "utils/DataOutputStream.h"
 
-#include "export.h"
+#include "include/export.h"
 
 DataOutputStream::DataOutputStream(const char *path) :
 		file(try_to_open(path, "w")), success(file != nullptr) {}

@@ -8,15 +8,13 @@
 #ifndef FILEMANAGER_H_
 #define FILEMANAGER_H_
 
-#include "common.h"
+#include "include/common.h"
 
-typedef int file_id;
-
-class FileManager
+class FileMapper
 {
 public:
-	FileManager();
-	~FileManager();
+	FileMapper();
+	~FileMapper();
 
 	file_id get_id(const char *path);
 	const char *get_path(file_id id);
@@ -27,12 +25,11 @@ public:
 
 	bool write(const char *path);
 	bool read(const char *path);
-
 private:
 	std::map<const char *, file_id, ConstCharComparator> by_path;
 	std::map<file_id, const char *> by_id;
 };
 
-FileManager &get_file_manager();
+FileMapper &get_file_manager();
 
 #endif /* FILEMANAGER_H_ */

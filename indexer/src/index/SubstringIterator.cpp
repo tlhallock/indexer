@@ -5,10 +5,9 @@
  *      Author: thallock
  */
 
-#include "SubstringIterator.h"
+#include "index/SubstringIterator.h"
 
-#include <stdlib.h>
-#include <cstring>
+#include "include/export.h"
 
 SubstringIterator::SubstringIterator(const char* str_) :
 	len(strlen(str_)),

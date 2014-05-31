@@ -40,4 +40,6 @@ struct ConstCharComparator
 #define FILES_BASE_DIR "/home/thallock/.indexes/files.d"
 #define FILES_FILE "/home/thallock/.indexes/files.txt"
 
+typedef int file_id;
+
 #endif /* COMMON_H_ */

@@ -5,10 +5,14 @@
  *      Author: thallock
  */
 
-#include "Index.h"
-#include "export.h"
+#include "query/Index.h"
+
+#include "include/export.h"
+
+#if 0
 
 #define ENTRY_CACHE_SIZE 10
+
 
 static std::map<const char *, std::shared_ptr<IndexEntry> > entry_cache;
 
@@ -51,11 +55,13 @@ std::shared_ptr<IndexEntry> get_index_entry(const char *token)
 	return ret;
 }
 
+#endif
+
 double query(const char* query)
 {
 	clock_t start_time = clock();
 
-	FileManager &manager = get_file_manager();
+	FileMapper &manager = get_file_manager();
 
 	IndexEntryIterater it(query);
 

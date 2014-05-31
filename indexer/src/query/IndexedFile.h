@@ -8,8 +8,9 @@
 #ifndef INDEXEDFILE_H_
 #define INDEXEDFILE_H_
 
-#include "WordManager.h"
-#include "DataOutputStream.h"
+#include "include/common.h"
+
+#include "utils/DataOutputStream.h"
 
 class OccuranceIterator
 {
@@ -42,6 +43,7 @@ public:
 
 	const char *get_index_path() const;
 	const char *get_index_attr_path() const;
+	const char *get_real_path() const;
 private:
 	void free_mem();
 

@@ -5,9 +5,9 @@
  *      Author: thallock
  */
 
-#include "Hash.h"
+#include "utils/Hash.h"
 
-#include "export.h"
+#include "include/export.h"
 
 #define MAX_PRIME 2147483629
 

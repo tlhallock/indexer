@@ -5,9 +5,9 @@
  *      Author: thallock
  */
 
-#include "IndexedFile.h"
+#include "query/IndexedFile.h"
 
-#include "export.h"
+#include "include/export.h"
 
 #define META_FILE "index"
 
@@ -35,6 +35,11 @@ const char *IndexedFile::get_index_path() const
 const char *IndexedFile::get_index_attr_path() const
 {
 	return index_path;
+}
+
+const char *IndexedFile::get_real_path() const
+{
+	return real_path;
 }
 
 time_t IndexedFile::get_last_indexed_time() const

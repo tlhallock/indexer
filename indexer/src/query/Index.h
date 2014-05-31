@@ -8,11 +8,8 @@
 #ifndef INDEX_H_
 #define INDEX_H_
 
-#include "IndexEntry.h"
+#include "include/common.h"
 
 double query(const char* query);
-
-
-std::shared_ptr<IndexEntry> get_index_entry(const char *token);
 
 #endif

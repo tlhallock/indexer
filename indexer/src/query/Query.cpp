@@ -5,7 +5,9 @@
  *      Author: thallock
  */
 
-#include "Query.h"
+#include "query/Query.h"
+
+#include "include/export.h"
 
 #if 0
 Query::Query(const char *query_) : query(query_), index(0) {}

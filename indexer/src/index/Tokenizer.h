@@ -8,9 +8,7 @@
 #ifndef TOKENIZER_H_
 #define TOKENIZER_H_
 
-#include "FileManager.h"
-
-#include "common.h"
+#include "include/common.h"
 
 bool is_delimiter(const char &c);
 bool is_alpha_numeric(const char &c);

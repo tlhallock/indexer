@@ -8,6 +8,8 @@
 #ifndef BOOST_FILE_UTILS_H_
 #define BOOST_FILE_UTILS_H_
 
+#include "include/common.h"
+
 bool file_exists(const char *p);
 bool directory_exists(const char *p);
 FILE *try_to_open(const char *p, const char *perms);

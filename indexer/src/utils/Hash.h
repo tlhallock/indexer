@@ -8,7 +8,7 @@
 #ifndef HASH_H_
 #define HASH_H_
 
-#include <cstring>
+#include "include/common.h"
 
 constexpr int NUM_HASHES = 5;
 constexpr int primes[NUM_HASHES] = {757, 773, 829, 599, 467};
