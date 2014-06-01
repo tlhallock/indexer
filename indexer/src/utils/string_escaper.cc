@@ -6,6 +6,21 @@
  */
 
 
+
+// Not here for any reason in particular...
+char *concatenate(const char *str1, const char *str2)
+{
+	char *ret_val = (char *) malloc (sizeof(*ret_val) * (strlen(str1) + strlen(str2) + 1));
+
+	ret_val[0] = '\0';
+	strcat(ret_val, str1);
+	strcat(ret_val, str2);
+
+	return ret_val;
+}
+
+
+
 #define ESCAPE_CHAR '.'
 #define VALID_FILENAME_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
 

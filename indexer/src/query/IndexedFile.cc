@@ -9,13 +9,13 @@
 
 #include "include/export.h"
 
-#define META_FILE "index"
+#define META_FILE "/index"
 
 IndexedFile::IndexedFile(file_id file_) :
 	file(file_),
 	real_path(get_file_mapper().get_path(file)),
 	base_dir(get_file_or_dir(get_settings().get_files_base_dir(), real_path, true)),
-	index_path(get_file_or_dir(base_dir, META_FILE, false)) {}
+	index_path(concatenate(base_dir, META_FILE)) {}
 
 IndexedFile::~IndexedFile()
 {

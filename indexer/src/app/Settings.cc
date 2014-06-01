@@ -19,17 +19,6 @@ const Settings &get_settings()
 	return *settings;
 }
 
-static const char *concatenate(const char *str1, const char *str2)
-{
-	char *ret_val = (char *) malloc (sizeof(*ret_val) * (strlen(str1) + strlen(str2) + 1));
-
-	ret_val[0] = '\0';
-	strcat(ret_val, str1);
-	strcat(ret_val, str2);
-
-	return ret_val;
-}
-
 Settings::Settings()
 {
 #if 0
