@@ -31,7 +31,7 @@ void IndexEntryIterater::init(const char *word, const char *path)
 IndexEntryIterater::IndexEntryIterater(const char *word) :
 		num_left(0), in(nullptr)
 {
-	char *path = get_file_or_dir(WORDS_BASE_DIR, word, false);
+	char *path = get_file_or_dir(get_settings().get_words_base_dir(), word, false);
 
 	init(word, path);
 
@@ -77,7 +77,7 @@ int IndexEntryIterater::get_num_left() const
 
 IndexEntry::IndexEntry(const char* token) :
 	word(token),
-	path(get_file_or_dir(WORDS_BASE_DIR, word, false)),
+	path(get_file_or_dir(get_settings().get_words_base_dir(), word, false)),
 	files()
 {
 	IndexEntryIterater it(token, path);

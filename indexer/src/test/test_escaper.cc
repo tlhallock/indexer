@@ -7,7 +7,9 @@
 
 #include "include/export.h"
 
-void main(int argc, char **argv)
+
+#if 0
+int main(int argc, char **argv)
 {
 	const char *str = "'foobar:{}_@^$*(_^LKSHEG(P&$PHLKGJLSDGsgsdg./1`";
 
@@ -26,4 +28,8 @@ void main(int argc, char **argv)
 	descape(ptr, ptr2, size2);
 
 	printf("%s\n", ptr2);
+
+	return 0;
 }
+
+#endif

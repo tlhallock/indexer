@@ -7,9 +7,10 @@
 
 #include "include/export.h"
 
-void main(int argc, char **argv)
+#if 1
+int main(int argc, char **argv)
 {
-	delete_file(BASE_DIR);
+	delete_file(get_settings().get_base_dir());
 
 	const char *str = "foo";
 
@@ -26,4 +27,7 @@ void main(int argc, char **argv)
 	std::cout << "Took " << time << "ms\n";
 
 	fflush(stdout);
+
+	return 0;
 }
+#endif

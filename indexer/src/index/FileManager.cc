@@ -86,7 +86,7 @@ size_t FileMapper::get_memory() const
 
 bool FileMapper::write() const
 {
-	DataOutputStream out(FILES_FILE);
+	DataOutputStream out(get_settings().get_files_file());
 	if (!out.successful())
 	{
 		return false;
@@ -104,7 +104,7 @@ bool FileMapper::write() const
 
 bool FileMapper::read()
 {
-	DataInputStream in(FILES_FILE);
+	DataInputStream in(get_settings().get_files_file());
 	if (!in.successful())
 	{
 		return false;

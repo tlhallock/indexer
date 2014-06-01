@@ -55,6 +55,7 @@ FileOffsetListQuery::FileOffsetListQuery(const char* word_) :
 		oit(word),
 		iit(nullptr)
 {
+	next();
 }
 
 FileOffsetListQuery::~FileOffsetListQuery()
@@ -67,7 +68,7 @@ FileOffsetListQuery::~FileOffsetListQuery()
 
 bool FileOffsetListQuery::has_next()
 {
-	return !iit->has_next() && !oit.has_next();
+	return iit != nullptr && !iit->has_next() && !oit.has_next();
 }
 
 void FileOffsetListQuery::next()
@@ -78,7 +79,7 @@ void FileOffsetListQuery::next()
 		return;
 	}
 
-	while (!iit->has_next())
+	while (iit == nullptr || !iit->has_next())
 	{
 		if (!oit.has_next())
 		{

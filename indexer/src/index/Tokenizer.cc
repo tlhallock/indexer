@@ -27,7 +27,7 @@ Tokenizer::~Tokenizer()
 
 bool is_delimiter(const char &c)
 {
-	return strchr(DELIMITERS, c) != NULL;
+	return strchr(get_settings().get_delims(), c) != NULL;
 }
 
 bool is_alpha_numeric(const char &c)
@@ -60,11 +60,11 @@ const char *Tokenizer::current_string()
 
 bool Tokenizer::is_binary() const
 {
-	if (bytes_read < 1 / MAX_UNREADABLE)
+	if (bytes_read < 1 / get_settings().get_max_unreadable_percentage())
 	{
 		return false;
 	}
-	bool binary = (unreadable / (double) bytes_read) > MAX_UNREADABLE;
+	bool binary = (unreadable / (double) bytes_read) > get_settings().get_max_unreadable_percentage();
 	if (binary)
 	{
 //		printf("%d / %ld\n", unreadable, bytes_read);

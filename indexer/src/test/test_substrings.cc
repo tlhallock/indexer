@@ -7,7 +7,8 @@
 
 #include "include/export.h"
 
-void main(int argc, char **argv)
+#if 0
+int main(int argc, char **argv)
 {
 	SubstringIterator it("foobar");
 
@@ -16,4 +17,8 @@ void main(int argc, char **argv)
 		printf("%d: %s\n", it.offset(), it.current());
 		it.next();
 	}
+
+	return 0;
 }
+
+#endif

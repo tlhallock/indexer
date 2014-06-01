@@ -9,6 +9,16 @@
 
 #include "include/export.h"
 
+const Settings &get_settings()
+{
+	static Settings *settings;
+	if (settings == nullptr)
+	{
+		settings = new Settings();
+	}
+	return *settings;
+}
+
 static const char *concatenate(const char *str1, const char *str2)
 {
 	char *ret_val = (char *) malloc (sizeof(*ret_val) * (strlen(str1) + strlen(str2) + 1));
@@ -22,7 +32,11 @@ static const char *concatenate(const char *str1, const char *str2)
 
 Settings::Settings()
 {
+#if 0
 	home_folder = "/home/thallock/.indexes";
+#else
+	home_folder = "/home/rever/.indexes";
+#endif
 
 	words_base_dir = concatenate(home_folder, "/words.d");
 	files_base_dir = concatenate(home_folder, "/files.d");
@@ -55,17 +69,6 @@ const char* Settings::get_files_base_dir() const
 const char* Settings::get_files_file() const
 {
 	return files_file;
-}
-
-
-const Settings &get_settings()
-{
-	static Settings *settings;
-	if (settings == nullptr)
-	{
-		settings = new Settings();
-	}
-	return settings;
 }
 
 const char* Settings::get_delims() const
