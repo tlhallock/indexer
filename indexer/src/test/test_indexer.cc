@@ -10,11 +10,11 @@
 #if 1
 int main(int argc, char **argv)
 {
-	delete_file(get_settings().get_base_dir());
+//	delete_file(get_settings().get_base_dir());
 
 	const char *str = "foo";
 
-	index_all(".");
+	index_all("./src");
 
 	get_file_mapper().write();
 
@@ -23,10 +23,8 @@ int main(int argc, char **argv)
 
 	FileOffsetListQuery q(str);
 
-	double time = q.run();
-	std::cout << "Took " << time << "ms\n";
-
-	fflush(stdout);
+//	double time = q.run();
+//	std::cout << "Took " << time << "ms\n";
 
 	return 0;
 }

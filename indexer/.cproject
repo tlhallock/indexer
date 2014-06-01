@@ -36,7 +36,7 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.890436259" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1728807331" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
-								<option id="gnu.cpp.link.option.flags.875609311" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-lboost_filesystem" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.875609311" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-lboost_filesystem -lboost_system" valueType="string"/>
 								<option id="gnu.cpp.link.option.libs.415487315" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="boost_filesystem"/>
 									<listOptionValue builtIn="false" value="boost_system"/>

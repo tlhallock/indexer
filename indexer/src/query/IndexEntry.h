@@ -66,7 +66,7 @@ public:
 	void flush();
 private:
 	void clear();
-	std::map<const char *, IndexEntry *> entries;
+	boost::unordered_map<std::string, IndexEntry *> entries;
 };
 
 IndexEntryCache &get_index_entry_cache();

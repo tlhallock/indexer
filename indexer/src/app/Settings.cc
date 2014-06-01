@@ -90,3 +90,8 @@ bool Settings::include_small_words() const
 {
 	return true;
 }
+
+bool Settings::human_readable_indices() const
+{
+	return true;
+}

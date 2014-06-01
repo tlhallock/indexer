@@ -10,7 +10,24 @@
 
 #include "include/common.h"
 
-#define HUMAN_READABLE 1
+class UnexpectedInputException : public std::exception
+{
+public:
+	UnexpectedInputException(const char *description_) :
+		description(strdup(description_)) {}
+
+	~UnexpectedInputException()
+	{
+		free(description);
+	}
+
+	const char *get_description()
+	{
+		return description;
+	}
+private:
+	char *description;
+};
 
 class DataOutputStream
 {
@@ -34,12 +51,13 @@ public:
 	DataInputStream(const char *path);
 	~DataInputStream();
 
-	int read_int();
-	char *read_str();
-	long int read_long();
+	int read_int() throw (UnexpectedInputException);
+	char *read_str() throw (UnexpectedInputException);
+	long int read_long() throw (UnexpectedInputException);
 
 	bool successful();
 private:
+	const char *path;
 	FILE *file;
 	bool success;
 };

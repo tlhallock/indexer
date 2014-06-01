@@ -24,7 +24,7 @@ void IndexEntryIterater::init(const char *word, const char *path)
 		return;
 	}
 
-	in->read_str();
+	free(in->read_str());
 	num_left = in->read_int();
 }
 
@@ -89,6 +89,7 @@ IndexEntry::IndexEntry(const char* token) :
 
 IndexEntry::~IndexEntry()
 {
+	free((char *) word);
 	free((char *) path);
 }
 
@@ -162,7 +163,6 @@ void IndexEntryCache::clear()
 	auto end = entries.end();
 	for (auto it = entries.begin(); it != end; ++it)
 	{
-		delete it->first;
 		delete it->second;
 	}
 	entries.clear();
@@ -175,9 +175,8 @@ IndexEntry& IndexEntryCache::get_index_entry(const char* token)
 	auto it = entries.find(token);
 	if (it == entries.end())
 	{
-		char *word = strdup(token);
-		entry = new IndexEntry(word);
-		entries.insert(std::pair<const char *, IndexEntry *>(word, entry));
+		entry = new IndexEntry(strdup(token));
+		entries.insert(std::pair<std::string, IndexEntry *>(token, entry));
 	}
 	else
 	{
@@ -195,10 +194,10 @@ void IndexEntryCache::flush()
 		it->second->save();
 	}
 
-	if (get_size() > 1000)
-	{
-		clear();
-	}
+//	if (get_size() > 1000)
+//	{
+//		clear();
+//	}
 }
 
 IndexEntryCache& get_index_entry_cache()

@@ -26,7 +26,7 @@ private:
 	IndexedFile *file;
 	time_t read_time;
 
-	std::map<const char *, int> words;
+	boost::unordered_map<std::string, int> words;
 	std::vector<std::set<int>*> orders;
 };
 

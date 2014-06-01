@@ -49,13 +49,15 @@ time_t IndexedFile::get_last_indexed_time() const
 	{
 		return (time_t) -1;
 	}
-	in.read_str(); // throw file name away
+	free(in.read_str()); // throw file name away
 	return in.read_long();
 }
 
 bool IndexedFile::needs_reindex() const
 {
-	return get_last_write_time(real_path) >= get_last_indexed_time();
+	time_t edited_time = get_last_write_time(real_path);
+	time_t indexed_time = get_last_indexed_time();
+	return  edited_time >= indexed_time;
 }
 
 
@@ -76,31 +78,44 @@ bool IndexedFile::needs_reindex() const
 
 
 
-OccuranceIterator::OccuranceIterator(file_id file, const char *key)
-	: num(0), count(0), in(nullptr)
+OccuranceIterator::OccuranceIterator(file_id file, const char *key) :
+	num(0),
+	count(0),
+	in(nullptr)
 {
-
 	const char *real_path = get_file_mapper().get_path(file);
-	const char *file_dir = get_file_or_dir(get_settings().get_files_base_dir(), real_path, true);
+	char *file_dir = get_file_or_dir(get_settings().get_files_base_dir(), real_path, true);
 	if (file_dir == nullptr)
 	{
 		return;
 	}
 
-	const char *file_path = get_file_or_dir(file_dir, key, false);
+	char *file_path = get_file_or_dir(file_dir, key, false);
+	free(file_dir);
+
 	if (file_path == nullptr)
 	{
 		return;
 	}
 
 	in = new DataInputStream(file_path);
+	free(file_path);
+
 	if (!in->successful())
 	{
 		delete in;
 		in = nullptr;
 	}
 
-	num = in->read_int();
+	try
+	{
+		num = in->read_int();
+	}
+	catch (UnexpectedInputException &ex)
+	{
+		std::cout << "Unable to read " << ex.get_description() << std::endl;
+		num = 0;
+	}
 }
 OccuranceIterator::~OccuranceIterator()
 {
@@ -112,7 +127,8 @@ OccuranceIterator::~OccuranceIterator()
 
 bool OccuranceIterator::has_next()
 {
-	return in != nullptr && count < num;
+	return in != nullptr
+			&& count < num;
 }
 
 int OccuranceIterator::next()

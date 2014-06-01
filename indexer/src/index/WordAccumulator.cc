@@ -25,11 +25,6 @@ WordAccumulator::~WordAccumulator()
 	{
 		delete *it;
 	}
-	auto wend = words.end();
-	for (auto it = words.begin(); it != wend; ++it)
-	{
-		delete it->first;
-	}
 }
 
 std::set<int> *WordAccumulator::get_index(const char *word)
@@ -37,7 +32,13 @@ std::set<int> *WordAccumulator::get_index(const char *word)
 	auto it = words.find(word);
 	if (it != words.end())
 	{
-		*it;
+		int index = it->second;
+		if (index > (int) orders.size() || orders.at(index) == nullptr)
+		{
+			puts("Error 57190187509318650135");
+			exit(1);
+		}
+		return orders.at(index);
 	}
 
 	int index = orders.size();
@@ -45,7 +46,7 @@ std::set<int> *WordAccumulator::get_index(const char *word)
 	std::set<int> *ret_val = new std::set<int>;
 	orders.push_back(ret_val);
 
-	words.insert(std::pair<const char *, int>(strdup(word), index));
+	words.insert(std::pair<std::string, int>(word, index));
 
 	return ret_val;
 }
@@ -60,7 +61,7 @@ void WordAccumulator::save() const
 	auto wend = words.end();
 	for (auto wit = words.begin(); wit != wend; ++wit)
 	{
-		const char *key = wit->first;
+		const char *key = wit->first.c_str();
 		char *key_file = get_file_or_dir(file->get_index_path(), key, false);
 		if (key_file == nullptr)
 		{

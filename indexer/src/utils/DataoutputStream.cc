@@ -10,7 +10,11 @@
 #include "include/export.h"
 
 DataOutputStream::DataOutputStream(const char *path) :
-		file(try_to_open(path, "w")), success(file != nullptr) {}
+		file(try_to_open(path, "w")),
+		success(file != nullptr)
+{
+
+}
 
 DataOutputStream::~DataOutputStream()
 {
@@ -22,7 +26,7 @@ DataOutputStream::~DataOutputStream()
 
 void DataOutputStream::write(int i)
 {
-	if (HUMAN_READABLE)
+	if (get_settings().human_readable_indices())
 	{
 		fprintf(file, "%d\n", i);
 	}
@@ -37,7 +41,7 @@ void DataOutputStream::write(int i)
 
 void DataOutputStream::write(long int i)
 {
-	if (HUMAN_READABLE)
+	if (get_settings().human_readable_indices())
 	{
 		fprintf(file, "%ld\n", i);
 	}
@@ -56,7 +60,7 @@ void DataOutputStream::write(long int i)
 
 void DataOutputStream::write(const char *str)
 {
-	if (HUMAN_READABLE)
+	if (get_settings().human_readable_indices())
 	{
 		fprintf(file, "%s\n", str);
 	}
@@ -77,8 +81,13 @@ bool DataOutputStream::successful()
 }
 
 
-DataInputStream::DataInputStream(const char *path) :
-	file(fopen(path, "r")), success(file != nullptr) {}
+DataInputStream::DataInputStream(const char *path_) :
+		path(strdup(path_)),
+		file(fopen(path_, "r")),
+		success(file != nullptr)
+{
+
+}
 
 DataInputStream::~DataInputStream()
 {
@@ -86,14 +95,18 @@ DataInputStream::~DataInputStream()
 	{
 		fclose(file);
 	}
+	free((char *)path);
 }
 
-int DataInputStream::read_int()
+int DataInputStream::read_int() throw (UnexpectedInputException)
 {
-	if (HUMAN_READABLE)
+	if (get_settings().human_readable_indices())
 	{
 		int ret;
-		fscanf(file, "%d", &ret);
+		if (!fscanf(file, "%d", &ret))
+		{
+			throw UnexpectedInputException(path);
+		}
 		return ret;
 	}
 	else
@@ -110,12 +123,15 @@ int DataInputStream::read_int()
 }
 
 
-long int DataInputStream::read_long()
+long int DataInputStream::read_long() throw (UnexpectedInputException)
 {
 	long int ret_val = 0;
-	if (HUMAN_READABLE)
+	if (get_settings().human_readable_indices())
 	{
-		fscanf(file, "%ld", &ret_val);
+		if (!fscanf(file, "%ld", &ret_val))
+		{
+			throw UnexpectedInputException(path);
+		}
 	}
 	else
 	{
@@ -132,14 +148,17 @@ long int DataInputStream::read_long()
 	return ret_val;
 }
 
-char *DataInputStream::read_str()
+char *DataInputStream::read_str() throw (UnexpectedInputException)
 {
-	if (HUMAN_READABLE)
+	if (get_settings().human_readable_indices())
 	{
 		char *ret_val = nullptr;
 		size_t size = 0;
 
-		getline(&ret_val, &size, file);
+		if (getline(&ret_val, &size, file) == -1)
+		{
+			throw UnexpectedInputException(path);
+		}
 		ret_val[strlen(ret_val) - 1] = '\0';
 
 		return ret_val;

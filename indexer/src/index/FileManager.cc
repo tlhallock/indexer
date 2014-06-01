@@ -9,10 +9,9 @@
 
 #include "include/export.h"
 
-static FileMapper *manager_ = nullptr;
-
 FileMapper& get_file_mapper()
 {
+	static FileMapper *manager_;
 	if (manager_ == nullptr)
 	{
 		manager_ = new FileMapper();
@@ -23,13 +22,17 @@ FileMapper& get_file_mapper()
 }
 
 FileMapper::FileMapper() :
-		by_path(), by_id()
+		by_path(),
+		by_id()
 {
-	write();
+
 }
 
 FileMapper::~FileMapper()
 {
+	puts("Writing the file mapper...");
+	write();
+
 	auto end = by_id.end();
 	for (auto it = by_id.begin(); it != end; ++it)
 	{
@@ -51,7 +54,7 @@ file_id FileMapper::get_id(const char* untrusted_path)
 	file_id next_id = by_id.size();
 
 	by_id.insert(std::pair<file_id, const char *>(next_id, real_path));
-	by_path.insert(std::pair<const char *, file_id>(real_path, next_id));
+	by_path.insert(std::pair<std::string, file_id>(std::string(real_path), next_id));
 
 	return next_id;
 }
@@ -114,7 +117,9 @@ bool FileMapper::read()
 	for (int i = 0; i < size; i++)
 	{
 		int id = in.read_int();
-		get_id(in.read_str());
+		char *path = in.read_str();
+		get_id(path);
+		free(path);
 	}
 
 	return true;

@@ -22,13 +22,11 @@
 #include <memory>
 #include <bits/shared_ptr.h>
 
-struct ConstCharComparator
-{
-   bool operator()(const char * A, const char * B) const
-   {
-      return strcmp(A, B) < 0;
-   }
-};
+#if 0
+	#include <unordered_map>
+#else
+	#include <boost/unordered_map.hpp>
+#endif
 
 typedef int file_id;
 

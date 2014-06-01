@@ -26,7 +26,7 @@ public:
 	bool write() const;
 	bool read();
 private:
-	std::map<const char *, file_id, ConstCharComparator> by_path;
+	boost::unordered_map<std::string, file_id> by_path;
 	std::map<file_id, const char *> by_id;
 };
 

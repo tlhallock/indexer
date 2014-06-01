@@ -68,7 +68,7 @@ FileOffsetListQuery::~FileOffsetListQuery()
 
 bool FileOffsetListQuery::has_next()
 {
-	return iit != nullptr && !iit->has_next() && !oit.has_next();
+	return (iit == nullptr || !iit->has_next()) && !oit.has_next();
 }
 
 void FileOffsetListQuery::next()

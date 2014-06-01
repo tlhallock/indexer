@@ -14,7 +14,7 @@ SubstringIterator::SubstringIterator(const char* str_) :
 	str(strdup(str_)),
 	cs(str),
 	ce(str + len),
-	cur_value((char *) malloc (sizeof (*cur_value) * len))
+	cur_value((char *) malloc (sizeof (*cur_value) * (len + 1)))
 {
 	create_current();
 }

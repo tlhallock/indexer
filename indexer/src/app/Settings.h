@@ -22,6 +22,8 @@ public:
 	double get_max_unreadable_percentage() const;
 	bool use_massive_storage() const;
 	bool include_small_words() const;
+
+	bool human_readable_indices() const;
 private:
 	const char *home_folder;
 	const char *words_base_dir;

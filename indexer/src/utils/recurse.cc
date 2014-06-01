@@ -58,4 +58,6 @@ void recurse_all_children(const char *dir,void (*fctn)(const int, const char *))
 		fctn(clen, childname);
 		free(childname);
 	}
+
+	closedir(dfd);
 }
