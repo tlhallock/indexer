@@ -9,23 +9,23 @@
 
 #include "include/export.h"
 
-#if 0
-Query::Query(const char *query_) : query(query_), index(0) {}
-Query::~Query() {}
-
-word_id Query::next()
+Query::Query()
 {
-	WordManager &manager = get_word_manager();
-	while (index < manager.length())
-	{
-		if (manager.word_contains(index, query))
-		{
-			return index++;
-		}
-
-		index++;
-	}
-	return -1;
 }
 
-#endif
+Query::~Query()
+{
+}
+
+double Query::run()
+{
+	clock_t start_time = clock();
+
+	while (has_next())
+	{
+		display();
+		next();
+	}
+
+	return 1000.0 * (clock() - start_time) / CLOCKS_PER_SEC;
+}

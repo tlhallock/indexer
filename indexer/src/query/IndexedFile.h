@@ -27,9 +27,6 @@ private:
 };
 
 
-
-
-
 class IndexedFile
 {
 public:
@@ -45,8 +42,6 @@ public:
 	const char *get_index_attr_path() const;
 	const char *get_real_path() const;
 private:
-	void free_mem();
-
 	file_id file;
 	const char *real_path;
 	const char *base_dir;

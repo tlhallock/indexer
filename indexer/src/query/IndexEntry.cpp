@@ -9,8 +9,6 @@
 
 #include "include/export.h"
 
-
-
 IndexEntryIterater::IndexEntryIterater(const char *word) :
 		num_left(0), in(nullptr)
 {

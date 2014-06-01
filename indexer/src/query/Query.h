@@ -8,17 +8,19 @@
 #ifndef QUERY_H_
 #define QUERY_H_
 
-
 class Query
 {
 public:
-	Query(const char *query);
+	Query();
 	virtual ~Query();
 
-	const char *next();
-private:
-	const char *query;
-	int index;
+	virtual bool has_next() = 0;
+	virtual void next() = 0;
+	virtual void display() = 0;
+
+	double run();
 };
+
+double query(Query &q);
 
 #endif /* QUERY_H_ */

@@ -20,7 +20,9 @@ void test_indexer(int argc, char **argv)
 	std::cout << "Number of files: " << get_file_manager().get_num_files() << "\n";
 	std::cout << "Files containing " << str << ":\n";
 
-	double time = query(str);
+	FileOffsetListQuery q(str);
+
+	double time = q.run();
 	std::cout << "Took " << time << "ms\n";
 
 	fflush(stdout);

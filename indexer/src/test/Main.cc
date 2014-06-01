@@ -11,5 +11,6 @@
 
 int main(int argc, char **argv)
 {
+	test_indexer(argc, argv);
 	return 0;
 }

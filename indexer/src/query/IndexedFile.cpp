@@ -45,6 +45,10 @@ const char *IndexedFile::get_real_path() const
 time_t IndexedFile::get_last_indexed_time() const
 {
 	DataInputStream in(index_path);
+	if (!in.successful())
+	{
+		return (time_t) -1;
+	}
 	in.read_str(); // throw file name away
 	return in.read_long();
 }

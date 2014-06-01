@@ -10,9 +10,9 @@
 #include "index/Tokenizer.h"
 #include "index/WordAccumulator.h"
 
-#include "query/Index.h"
 #include "query/IndexedFile.h"
 #include "query/IndexEntry.h"
+#include "query/SimpleQuery.h"
 #include "query/Query.h"
 
 #include "test/tests.h"
