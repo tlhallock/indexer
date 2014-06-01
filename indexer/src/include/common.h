@@ -8,8 +8,6 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-#include "include/config.h"
-
 #include <cstring>
 #include <ctime>
 #include <iostream>
@@ -32,11 +30,8 @@ struct ConstCharComparator
    }
 };
 
-#define BASE_DIR "/home/thallock/.indexes"
-#define WORDS_BASE_DIR "/home/thallock/.indexes/words.d"
-#define FILES_BASE_DIR "/home/thallock/.indexes/files.d"
-#define FILES_FILE "/home/thallock/.indexes/files.txt"
-
 typedef int file_id;
+
+#include "app/Settings.h"
 
 #endif /* COMMON_H_ */

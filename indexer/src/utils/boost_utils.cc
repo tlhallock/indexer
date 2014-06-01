@@ -11,8 +11,6 @@
 
 #include <boost/filesystem.hpp>
 
-
-
 bool file_exists(const char *p)
 {
 	return is_file(p);
