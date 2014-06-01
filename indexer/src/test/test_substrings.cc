@@ -5,8 +5,6 @@
  *      Author: thallock
  */
 
-#include "test/tests.h"
-
 #include "include/export.h"
 
 void main(int argc, char **argv)
