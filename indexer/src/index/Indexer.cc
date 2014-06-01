@@ -27,6 +27,7 @@ void index(const char *path)
 	while ((token = t.next()) != NULL)
 	{
 		SubstringIterator subs(token);
+		get_index_entry_cache().get_index_entry(token).add_file(file);
 
 		while (subs.has_next())
 		{
@@ -36,6 +37,7 @@ void index(const char *path)
 	}
 
 	accum.save();
+	get_index_entry_cache().flush();
 }
 
 static void index_function(int len, const char *path)

@@ -12,6 +12,8 @@
 
 #include "utils/DataOutputStream.h"
 
+class IndexEntryCache;
+
 class IndexEntryIterater
 {
 public:
@@ -25,5 +27,43 @@ private:
 	int num_left;
 	DataInputStream *in;
 };
+
+class IndexEntry
+{
+	friend class IndexEntryCache;
+
+	~IndexEntry();
+
+	void add_file(file_id file);
+	void remove_file(file_id file);
+
+	void save() const;
+
+	int get_num_refs() const;
+private:
+
+	IndexEntry(const char *token);
+
+	const char *word;
+	const char *path;
+	std::set<file_id> files;
+};
+
+class IndexEntryCache
+{
+public:
+	IndexEntryCache();
+	~IndexEntryCache();
+
+	IndexEntry &get_index_entry(const char *token);
+
+	void flush();
+private:
+	void clear();
+	std::map<const char *, IndexEntry *> entries;
+};
+
+IndexEntryCache &get_index_entry_cache();
+
 
 #endif /* INDEXENTRY_H_ */
