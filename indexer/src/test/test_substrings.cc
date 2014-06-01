@@ -9,7 +9,7 @@
 
 #include "include/export.h"
 
-void test_substrings(int argc, char **argv)
+void main(int argc, char **argv)
 {
 	SubstringIterator it("foobar");
 

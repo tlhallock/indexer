@@ -9,7 +9,7 @@
 
 #include "include/export.h"
 
-void test_escaper(int argc, char **argv)
+void main(int argc, char **argv)
 {
 	const char *str = "'foobar:{}_@^$*(_^LKSHEG(P&$PHLKGJLSDGsgsdg./1`";
 

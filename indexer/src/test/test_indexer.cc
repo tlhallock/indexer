@@ -9,7 +9,7 @@
 
 #include "include/export.h"
 
-void test_indexer(int argc, char **argv)
+void main(int argc, char **argv)
 {
 	delete_file(BASE_DIR);
 

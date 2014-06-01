@@ -15,8 +15,6 @@
 #include "query/SimpleQuery.h"
 #include "query/Query.h"
 
-#include "test/tests.h"
-
 #include "utils/boost_file_utils.h"
 #include "utils/DataOutputStream.h"
 #include "utils/Hash.h"

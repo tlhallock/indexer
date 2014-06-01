@@ -8,7 +8,7 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-//#define __GXX_EXPERIMENTAL_CXX0X__ 1
+#include "include/config.h"
 
 #include <cstring>
 #include <ctime>
@@ -31,9 +31,6 @@ struct ConstCharComparator
       return strcmp(A, B) < 0;
    }
 };
-
-#define DELIMITERS  ".!@#$%^&*()_+-={}|[];':\",.<>/?\\ \t\n\r^`~"
-#define MAX_UNREADABLE .1
 
 #define BASE_DIR "/home/thallock/.indexes"
 #define WORDS_BASE_DIR "/home/thallock/.indexes/words.d"
