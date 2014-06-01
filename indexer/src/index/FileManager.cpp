@@ -35,20 +35,21 @@ FileMapper::~FileMapper()
 	}
 }
 
-file_id FileMapper::get_id(const char* path)
+file_id FileMapper::get_id(const char* untrusted_path)
 {
-	auto it = by_path.find(path);
+	char *real_path = realpath(untrusted_path, nullptr);
+
+	auto it = by_path.find(real_path);
 	if (it != by_path.end())
 	{
+		free(real_path);
 		return it->second;
 	}
 
 	file_id next_id = by_id.size();
 
-	const char *dpath = strdup(path);
-
-	by_id.insert(std::pair<file_id, const char *>(next_id, dpath));
-	by_path.insert(std::pair<const char *, file_id>(dpath, next_id));
+	by_id.insert(std::pair<file_id, const char *>(next_id, real_path));
+	by_path.insert(std::pair<const char *, file_id>(real_path, next_id));
 
 	return next_id;
 }
