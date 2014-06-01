@@ -9,10 +9,8 @@
 
 #include "include/export.h"
 
-IndexEntryIterater::IndexEntryIterater(const char *word) :
-		num_left(0), in(nullptr)
+void IndexEntryIterater::init(const char *word, const char *path)
 {
-	char *path = get_file_or_dir(WORDS_BASE_DIR, word, false);
 	if (path == nullptr)
 	{
 		return;
@@ -28,8 +26,22 @@ IndexEntryIterater::IndexEntryIterater(const char *word) :
 
 	in->read_str();
 	num_left = in->read_int();
+}
+
+IndexEntryIterater::IndexEntryIterater(const char *word) :
+		num_left(0), in(nullptr)
+{
+	char *path = get_file_or_dir(WORDS_BASE_DIR, word, false);
+
+	init(word, path);
 
 	free(path);
+}
+
+IndexEntryIterater::IndexEntryIterater(const char *word, const char *path) :
+		num_left(0), in(nullptr)
+{
+	init(word, path);
 }
 
 IndexEntryIterater::~IndexEntryIterater()
@@ -44,7 +56,7 @@ IndexEntryIterater::~IndexEntryIterater()
 
 bool IndexEntryIterater::has_next() const
 {
-	return num_left > 0;
+	return in != nullptr && num_left > 0;
 }
 
 file_id IndexEntryIterater::next()
@@ -68,6 +80,11 @@ IndexEntry::IndexEntry(const char* token) :
 	path(get_file_or_dir(WORDS_BASE_DIR, word, false)),
 	files()
 {
+	IndexEntryIterater it(token, path);
+	while (it.has_next())
+	{
+		files.insert(it.next());
+	}
 }
 
 IndexEntry::~IndexEntry()
@@ -104,7 +121,7 @@ void IndexEntry::save() const
 
 	if (get_num_refs() == 0)
 	{
-		delete_file(buff);
+		delete_file(path);
 		return;
 	}
 
@@ -114,7 +131,6 @@ void IndexEntry::save() const
 		printf("Can't open '%s' for saving!\n", path);
 		exit(1);
 	}
-	free(buff);
 
 	out.write(word);
 	out.write((int) files.size());
@@ -134,6 +150,11 @@ IndexEntryCache::IndexEntryCache() :
 IndexEntryCache::~IndexEntryCache()
 {
 	clear();
+}
+
+int IndexEntryCache::get_size()
+{
+	return entries.size();
 }
 
 void IndexEntryCache::clear()
@@ -172,6 +193,11 @@ void IndexEntryCache::flush()
 	for (auto it = entries.begin(); it != end; ++it)
 	{
 		it->second->save();
+	}
+
+	if (get_size() > 1000)
+	{
+		clear();
 	}
 }
 

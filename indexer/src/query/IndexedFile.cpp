@@ -13,7 +13,7 @@
 
 IndexedFile::IndexedFile(file_id file_) :
 	file(file_),
-	real_path(get_file_manager().get_path(file)),
+	real_path(get_file_mapper().get_path(file)),
 	base_dir(get_file_or_dir(FILES_BASE_DIR, real_path, true)),
 	index_path(get_file_or_dir(base_dir, META_FILE, false)) {}
 
@@ -80,7 +80,7 @@ OccuranceIterator::OccuranceIterator(file_id file, const char *key)
 	: num(0), count(0), in(nullptr)
 {
 
-	const char *real_path = get_file_manager().get_path(file);
+	const char *real_path = get_file_mapper().get_path(file);
 	const char *file_dir = get_file_or_dir(FILES_BASE_DIR, real_path, true);
 	if (file_dir == nullptr)
 	{

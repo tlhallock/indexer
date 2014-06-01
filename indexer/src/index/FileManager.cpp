@@ -11,20 +11,22 @@
 
 static FileMapper *manager_ = nullptr;
 
-FileMapper& get_file_manager()
+FileMapper& get_file_mapper()
 {
 	if (manager_ == nullptr)
 	{
 		manager_ = new FileMapper();
-		manager_->read(FILES_FILE);
+		manager_->read();
 	}
 
 	return *manager_;
 }
 
 FileMapper::FileMapper() :
-			by_path(),
-			by_id() {}
+		by_path(), by_id()
+{
+	write();
+}
 
 FileMapper::~FileMapper()
 {
@@ -54,23 +56,22 @@ file_id FileMapper::get_id(const char* untrusted_path)
 	return next_id;
 }
 
-const char* FileMapper::get_path(file_id id)
+const char* FileMapper::get_path(file_id id) const
 {
 	return by_id.at(id);
 }
 
-FILE* FileMapper::read(file_id file)
+FILE* FileMapper::read(file_id file) const
 {
 	return fopen(get_path(file), "r");
 }
 
-
-int FileMapper::get_num_files()
+int FileMapper::get_num_files() const
 {
 	return by_id.size();
 }
 
-size_t FileMapper::get_memory()
+size_t FileMapper::get_memory() const
 {
 	size_t memory = 0;
 
@@ -83,10 +84,9 @@ size_t FileMapper::get_memory()
 	return memory;
 }
 
-
-bool FileMapper::write(const char *path)
+bool FileMapper::write() const
 {
-	DataOutputStream out(path);
+	DataOutputStream out(FILES_FILE);
 	if (!out.successful())
 	{
 		return false;
@@ -96,14 +96,15 @@ bool FileMapper::write(const char *path)
 	out.write(size);
 	for (int i = 0; i < size; i++)
 	{
+		out.write(i);
 		out.write(by_id.at(i));
 	}
 	return true;
 }
 
-bool FileMapper::read(const char *path)
+bool FileMapper::read()
 {
-	DataInputStream in(path);
+	DataInputStream in(FILES_FILE);
 	if (!in.successful())
 	{
 		return false;
@@ -112,6 +113,7 @@ bool FileMapper::read(const char *path)
 	int size = in.read_int();
 	for (int i = 0; i < size; i++)
 	{
+		int id = in.read_int();
 		get_id(in.read_str());
 	}
 

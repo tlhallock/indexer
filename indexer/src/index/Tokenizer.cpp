@@ -10,7 +10,7 @@
 #define INITIAL_BUFFER_SIZE 256
 
 Tokenizer::Tokenizer(file_id file_) :
-	file(get_file_manager().read(file_)),
+	file(get_file_mapper().read(file_)),
 	id(file_),
 	index(0),
 	buff_size(INITIAL_BUFFER_SIZE),
@@ -68,7 +68,7 @@ bool Tokenizer::is_binary() const
 	if (binary)
 	{
 //		printf("%d / %ld\n", unreadable, bytes_read);
-		fprintf(stdout, "Binary file: %s\n", get_file_manager().get_path(id));
+		fprintf(stdout, "Binary file: %s\n", get_file_mapper().get_path(id));
 	}
 	return binary;
 }

@@ -11,7 +11,7 @@
 
 void index(const char *path)
 {
-	file_id file = get_file_manager().get_id(path);
+	file_id file = get_file_mapper().get_id(path);
 	fprintf(stdout, "Indexing %d: %s\n", file, path);
 
 	IndexedFile ifile(file);
@@ -38,6 +38,8 @@ void index(const char *path)
 
 	accum.save();
 	get_index_entry_cache().flush();
+
+	std::cout << "Number of entries in the IndexEntryCache: " << get_index_entry_cache().get_size() << std::endl;
 }
 
 static void index_function(int len, const char *path)

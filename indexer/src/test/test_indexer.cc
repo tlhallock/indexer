@@ -17,7 +17,9 @@ void test_indexer(int argc, char **argv)
 
 	index_all(".");
 
-	std::cout << "Number of files: " << get_file_manager().get_num_files() << "\n";
+	get_file_mapper().write();
+
+	std::cout << "Number of files: " << get_file_mapper().get_num_files() << "\n";
 	std::cout << "Files containing " << str << ":\n";
 
 	FileOffsetListQuery q(str);

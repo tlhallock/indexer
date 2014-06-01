@@ -17,19 +17,19 @@ public:
 	~FileMapper();
 
 	file_id get_id(const char *path);
-	const char *get_path(file_id id);
+	const char *get_path(file_id id) const;
 
-	FILE *read(file_id file);
-	int get_num_files();
-	size_t get_memory();
+	FILE *read(file_id file) const;
+	int get_num_files() const;
+	size_t get_memory() const;
 
-	bool write(const char *path);
-	bool read(const char *path);
+	bool write() const;
+	bool read();
 private:
 	std::map<const char *, file_id, ConstCharComparator> by_path;
 	std::map<file_id, const char *> by_id;
 };
 
-FileMapper &get_file_manager();
+FileMapper &get_file_mapper();
 
 #endif /* FILEMANAGER_H_ */

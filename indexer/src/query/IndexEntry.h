@@ -18,18 +18,23 @@ class IndexEntryIterater
 {
 public:
 	IndexEntryIterater(const char *word);
+	IndexEntryIterater(const char *word, const char *path);
+
 	~IndexEntryIterater();
 
 	bool has_next() const;
 	file_id next();
 	int get_num_left() const;
 private:
+	void init(const char *word, const char *path);
+
 	int num_left;
 	DataInputStream *in;
 };
 
 class IndexEntry
 {
+public:
 	friend class IndexEntryCache;
 
 	~IndexEntry();
@@ -41,7 +46,6 @@ class IndexEntry
 
 	int get_num_refs() const;
 private:
-
 	IndexEntry(const char *token);
 
 	const char *word;
@@ -56,6 +60,8 @@ public:
 	~IndexEntryCache();
 
 	IndexEntry &get_index_entry(const char *token);
+
+	int get_size();
 
 	void flush();
 private:

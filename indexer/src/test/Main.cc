@@ -12,5 +12,7 @@
 int main(int argc, char **argv)
 {
 	test_indexer(argc, argv);
+
+	puts("Done.");
 	return 0;
 }
