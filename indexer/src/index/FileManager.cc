@@ -11,21 +11,20 @@
 
 FileMapper& get_file_mapper()
 {
-	static FileMapper *manager_;
-	if (manager_ == nullptr)
+	static FileMapper *manager;
+	if (manager == nullptr)
 	{
-		manager_ = new FileMapper();
-		manager_->read();
+		manager = new FileMapper();
 	}
 
-	return *manager_;
+	return *manager;
 }
 
 FileMapper::FileMapper() :
 		by_path(),
 		by_id()
 {
-
+	read();
 }
 
 FileMapper::~FileMapper()
@@ -36,7 +35,7 @@ FileMapper::~FileMapper()
 	auto end = by_id.end();
 	for (auto it = by_id.begin(); it != end; ++it)
 	{
-		delete it->second;
+		free((char *) it->second);
 	}
 }
 

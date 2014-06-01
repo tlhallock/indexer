@@ -12,8 +12,8 @@
 SubstringIterator::SubstringIterator(const char* str_) :
 	len(strlen(str_)),
 	str(strdup(str_)),
-	cs(str),
-	ce(str + len),
+	current_start(str),
+	current_end(str + len),
 	cur_value((char *) malloc (sizeof (*cur_value) * (len + 1)))
 {
 	create_current();
@@ -27,26 +27,26 @@ SubstringIterator::~SubstringIterator()
 
 bool SubstringIterator::has_next()
 {
-	return ce != cs;
+	return current_end != current_start;
 }
 
 const char* SubstringIterator::next()
 {
-	if (ce == cs)
+	if (current_end == current_start)
 	{
 		return nullptr;
 	}
 
-	ce--;
-	if (ce != cs)
+	current_end--;
+	if (current_end != current_start)
 	{
 		return create_current();
 	}
 
-	cs++;
-	ce = str + len;
+	current_start++;
+	current_end = str + len;
 
-	if (ce == cs)
+	if (current_end == current_start)
 	{
 		return nullptr;
 	}
@@ -58,10 +58,10 @@ const char* SubstringIterator::next()
 const char *SubstringIterator::create_current()
 {
 	char *dest = cur_value;
-	char *src = cs;
+	char *src = current_start;
 
 
-	while (src != ce)
+	while (src != current_end)
 	{
 		*(dest++) = *(src++);
 	}
@@ -73,7 +73,7 @@ const char *SubstringIterator::create_current()
 
 int SubstringIterator::offset()
 {
-	return cs - str;
+	return current_start - str;
 }
 
 const char* SubstringIterator::current()

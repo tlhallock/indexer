@@ -25,8 +25,8 @@ private:
 	int len;
 
 	char *str;
-	char *cs;
-	char *ce;
+	char *current_start;
+	char *current_end;
 
 	char *cur_value;
 };
