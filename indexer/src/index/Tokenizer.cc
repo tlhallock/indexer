@@ -9,7 +9,7 @@
 
 #define INITIAL_BUFFER_SIZE 256
 
-Tokenizer::Tokenizer(file_id file_) :
+Tokenizer::Tokenizer(FileId file_) :
 	file(get_file_mapper().read(file_)),
 	id(file_),
 	index(0),

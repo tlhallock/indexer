@@ -33,7 +33,7 @@ FileMapper::~FileMapper()
 	write();
 }
 
-file_id FileMapper::get_id(const char* untrusted_path)
+FileId FileMapper::get_id(const char* untrusted_path)
 {
 	if (!*untrusted_path)
 	{
@@ -52,15 +52,15 @@ file_id FileMapper::get_id(const char* untrusted_path)
 		return it->second;
 	}
 
-	file_id next_id = by_id.size();
+	FileId next_id = by_id.size();
 
-	by_id.insert(std::pair<file_id, const char *>(next_id, real_path));
-	by_path.insert(std::pair<std::string, file_id>(std::string(real_path), next_id));
+	by_id.insert(std::pair<FileId, const char *>(next_id, real_path));
+	by_path.insert(std::pair<std::string, FileId>(std::string(real_path), next_id));
 
 	return next_id;
 }
 
-const char* FileMapper::get_path(file_id id) const
+const char* FileMapper::get_path(FileId id) const
 {
 	auto it = by_id.find(id);
 	if (it == by_id.end())
@@ -70,7 +70,7 @@ const char* FileMapper::get_path(file_id id) const
 	return it->second.c_str();
 }
 
-FILE* FileMapper::read(file_id file) const
+FILE* FileMapper::read(FileId file) const
 {
 	const char *path = get_path(file);
 	if (path == nullptr)

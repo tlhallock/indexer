@@ -29,7 +29,7 @@
 	#include <boost/unordered_map.hpp>
 #endif
 
-typedef int file_id;
+typedef int FileId;
 
 char *concatenate(const char *str1, const char *str2);
 

@@ -15,12 +15,12 @@
 class FileListQueryResults : public QueryResults
 {
 public:
-	FileListQueryResults(file_id file_);
+	FileListQueryResults(FileId file_);
 	~FileListQueryResults();
 
 	void display() const;
 private:
-	file_id file;
+	FileId file;
 };
 
 class FileListQuery : public Query
@@ -40,7 +40,7 @@ private:
 class FileOffsetListQueryResults : public QueryResults
 {
 public:
-	FileOffsetListQueryResults(file_id file_, int offset_);
+	FileOffsetListQueryResults(FileId file_, int offset_);
 	~FileOffsetListQueryResults();
 
 	void display() const;
@@ -48,7 +48,7 @@ public:
 	void set_file(int file_);
 	void set_offset(int offset_);
 private:
-	file_id file;
+	FileId file;
 	int offset;
 };
 

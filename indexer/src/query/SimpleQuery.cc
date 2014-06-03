@@ -111,7 +111,7 @@ const QueryResults &FileOffsetListQuery::next()
 
 
 
-FileListQueryResults::FileListQueryResults(file_id file_) :
+FileListQueryResults::FileListQueryResults(FileId file_) :
 		file(file_)
 {
 }
@@ -124,7 +124,7 @@ void FileListQueryResults::display() const
 	std::cout << "File " << get_file_mapper().get_path(file) << " matches." << std::endl;
 }
 
-FileOffsetListQueryResults::FileOffsetListQueryResults(file_id file_, int offset_) :
+FileOffsetListQueryResults::FileOffsetListQueryResults(FileId file_, int offset_) :
 		file(file_), offset(offset_)
 {
 }

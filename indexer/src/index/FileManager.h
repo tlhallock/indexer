@@ -18,17 +18,17 @@ public:
 	FileMapper();
 	~FileMapper();
 
-	file_id get_id(const char *path);
-	const char *get_path(file_id id) const;
+	FileId get_id(const char *path);
+	const char *get_path(FileId id) const;
 
-	FILE *read(file_id file) const;
+	FILE *read(FileId file) const;
 	int get_num_files() const;
 	size_t get_memory() const;
 
 	bool write() const;
 	bool read();
 private:
-	boost::unordered_map<std::string, file_id> by_path;
+	boost::unordered_map<std::string, FileId> by_path;
 	boost::unordered_map<int, std::string> by_id;
 };
 

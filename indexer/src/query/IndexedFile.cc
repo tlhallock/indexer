@@ -11,7 +11,7 @@
 
 #define META_FILE "/index"
 
-IndexedFile::IndexedFile(file_id file_) :
+IndexedFile::IndexedFile(FileId file_) :
 	file(file_),
 	real_path(get_file_mapper().get_path(file)),
 	base_dir(get_file_or_dir(get_settings().get_files_base_dir(), real_path, true)),
@@ -78,7 +78,7 @@ bool IndexedFile::needs_reindex() const
 
 
 
-OccuranceIterator::OccuranceIterator(file_id file, const char *key) :
+OccuranceIterator::OccuranceIterator(FileId file, const char *key) :
 	num(0),
 	count(0),
 	in(nullptr)

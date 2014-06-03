@@ -16,7 +16,7 @@ bool is_alpha_numeric(const char &c);
 class Tokenizer
 {
 public:
-	Tokenizer(file_id file);
+	Tokenizer(FileId file);
 	virtual ~Tokenizer();
 
 	const char *next();
@@ -27,7 +27,7 @@ private:
 	bool is_binary() const;
 
 	FILE *file;
-	file_id id;
+	FileId id;
 
 	int index;
 	size_t buff_size;

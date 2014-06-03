@@ -59,7 +59,7 @@ bool IndexEntryIterater::has_next() const
 	return in != nullptr && num_left > 0;
 }
 
-file_id IndexEntryIterater::next()
+FileId IndexEntryIterater::next()
 {
 	if (!has_next())
 	{
@@ -93,12 +93,12 @@ IndexEntry::~IndexEntry()
 	free((char *) path);
 }
 
-void IndexEntry::add_file(file_id file)
+void IndexEntry::add_file(FileId file)
 {
 	files.insert(file);
 }
 
-void IndexEntry::remove_file(file_id file)
+void IndexEntry::remove_file(FileId file)
 {
 //	auto it = files.find(file);
 //	if (it == files.end())

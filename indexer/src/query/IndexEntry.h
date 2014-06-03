@@ -23,7 +23,7 @@ public:
 	~IndexEntryIterater();
 
 	bool has_next() const;
-	file_id next();
+	FileId next();
 	int get_num_left() const;
 private:
 	void init(const char *word, const char *path);
@@ -39,8 +39,8 @@ public:
 
 	~IndexEntry();
 
-	void add_file(file_id file);
-	void remove_file(file_id file);
+	void add_file(FileId file);
+	void remove_file(FileId file);
 
 	void save() const;
 
@@ -50,7 +50,7 @@ private:
 
 	const char *word;
 	const char *path;
-	std::set<file_id> files;
+	std::set<FileId> files;
 };
 
 class IndexEntryCache

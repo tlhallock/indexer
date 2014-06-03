@@ -9,7 +9,7 @@
 
 #include "include/export.h"
 
-static void add_word(const char *token, int offset, file_id file, WordAccumulator &accum)
+static void add_word(const char *token, int offset, FileId file, WordAccumulator &accum)
 {
 	get_index_entry_cache().get_index_entry(token).add_file(file);
 	if (!get_settings().should_index_substrings())
@@ -22,7 +22,7 @@ static void add_word(const char *token, int offset, file_id file, WordAccumulato
 	}
 }
 
-static void encountered_token(const char *token, int offset, file_id file, WordAccumulator &accum)
+static void encountered_token(const char *token, int offset, FileId file, WordAccumulator &accum)
 {
 	if (!get_settings().should_small_words() && strlen(token) <= 2)
 	{
@@ -45,7 +45,7 @@ static void encountered_token(const char *token, int offset, file_id file, WordA
 
 void index(const char *path)
 {
-	file_id file = get_file_mapper().get_id(path);
+	FileId file = get_file_mapper().get_id(path);
 	if (file == INVALID_FILE)
 	{
 		return;

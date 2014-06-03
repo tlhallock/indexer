@@ -17,7 +17,7 @@ class IndexedFile;
 class OccuranceIterator
 {
 public:
-	OccuranceIterator(file_id file, const char *key);
+	OccuranceIterator(FileId file, const char *key);
 	OccuranceIterator(const IndexedFile &ifile, const char *key);
 
 	~OccuranceIterator();
@@ -34,7 +34,7 @@ private:
 class IndexedFile
 {
 public:
-	IndexedFile(file_id file_);
+	IndexedFile(FileId file_);
 	virtual ~IndexedFile();
 
 	void clear();
@@ -46,7 +46,7 @@ public:
 	const char *get_index_attr_path() const;
 	const char *get_real_path() const;
 private:
-	file_id file;
+	FileId file;
 	const char *real_path;
 	const char *base_dir;
 	const char *index_path;
