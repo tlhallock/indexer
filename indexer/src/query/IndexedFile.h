@@ -18,7 +18,7 @@ public:
 	OccuranceIterator(file_id file, const char *key);
 	~OccuranceIterator();
 
-	bool has_next();
+	bool has_next() const;
 	int next();
 private:
 	int num;

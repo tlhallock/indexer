@@ -5,7 +5,8 @@
  *      Author: thallock
  */
 
-
+#include <stdlib.h>
+#include <cstring>
 
 // Not here for any reason in particular...
 char *concatenate(const char *str1, const char *str2)

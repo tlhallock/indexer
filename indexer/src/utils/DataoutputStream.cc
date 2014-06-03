@@ -13,7 +13,10 @@ DataOutputStream::DataOutputStream(const char *path) :
 		file(try_to_open(path, "w")),
 		success(file != nullptr)
 {
-
+//	if (success)
+//	{
+//		fseek(file, 0, SEEK_SET);
+//	}
 }
 
 DataOutputStream::~DataOutputStream()
@@ -103,7 +106,7 @@ int DataInputStream::read_int() throw (UnexpectedInputException)
 	if (get_settings().human_readable_indices())
 	{
 		int ret;
-		if (!fscanf(file, "%d", &ret))
+		if (!fscanf(file, "%d\n", &ret))
 		{
 			throw UnexpectedInputException(path);
 		}

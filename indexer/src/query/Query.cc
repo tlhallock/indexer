@@ -9,13 +9,12 @@
 
 #include "include/export.h"
 
-Query::Query()
-{
-}
 
-Query::~Query()
-{
-}
+QueryResults::QueryResults() {}
+QueryResults::~QueryResults() {}
+
+Query::Query() {}
+Query::~Query() {}
 
 double Query::run()
 {
@@ -23,8 +22,7 @@ double Query::run()
 
 	while (has_next())
 	{
-		display();
-		next();
+		next().display();
 	}
 
 	return 1000.0 * (clock() - start_time) / CLOCKS_PER_SEC;

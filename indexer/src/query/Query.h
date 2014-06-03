@@ -8,15 +8,24 @@
 #ifndef QUERY_H_
 #define QUERY_H_
 
+class QueryResults
+{
+public:
+	QueryResults();
+	virtual ~QueryResults();
+
+	virtual void display() const = 0;
+};
+
+
 class Query
 {
 public:
 	Query();
 	virtual ~Query();
 
-	virtual bool has_next() = 0;
-	virtual void next() = 0;
-	virtual void display() = 0;
+	virtual bool has_next() const = 0;
+	virtual const QueryResults &next() = 0;
 
 	double run();
 };

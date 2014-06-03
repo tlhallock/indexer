@@ -31,17 +31,19 @@ FileMapper::~FileMapper()
 {
 	puts("Writing the file mapper...");
 	write();
-
-	auto end = by_id.end();
-	for (auto it = by_id.begin(); it != end; ++it)
-	{
-		free((char *) it->second);
-	}
 }
 
 file_id FileMapper::get_id(const char* untrusted_path)
 {
+	if (!*untrusted_path)
+	{
+		return INVALID_FILE;
+	}
 	char *real_path = realpath(untrusted_path, nullptr);
+	if (real_path == nullptr || !*real_path)
+	{
+		return INVALID_FILE;
+	}
 
 	auto it = by_path.find(real_path);
 	if (it != by_path.end())
@@ -60,12 +62,22 @@ file_id FileMapper::get_id(const char* untrusted_path)
 
 const char* FileMapper::get_path(file_id id) const
 {
-	return by_id.at(id);
+	auto it = by_id.find(id);
+	if (it == by_id.end())
+	{
+		return nullptr;
+	}
+	return it->second.c_str();
 }
 
 FILE* FileMapper::read(file_id file) const
 {
-	return fopen(get_path(file), "r");
+	const char *path = get_path(file);
+	if (path == nullptr)
+	{
+		return nullptr;
+	}
+	return fopen(path, "r");
 }
 
 int FileMapper::get_num_files() const
@@ -80,7 +92,7 @@ size_t FileMapper::get_memory() const
 	auto end = by_id.end();
 	for (auto it = by_id.begin(); it != end; ++it)
 	{
-		memory += strlen(it->second);
+		memory += it->second.size();
 	}
 
 	return memory;
@@ -96,10 +108,11 @@ bool FileMapper::write() const
 
 	int size = by_id.size();
 	out.write(size);
-	for (int i = 0; i < size; i++)
+	auto end = by_id.end();
+	for (auto it = by_id.begin(); it != end; ++it)
 	{
-		out.write(i);
-		out.write(by_id.at(i));
+		out.write(it->first);
+		out.write(it->second.c_str());
 	}
 	return true;
 }
@@ -112,13 +125,21 @@ bool FileMapper::read()
 		return false;
 	}
 
-	int size = in.read_int();
-	for (int i = 0; i < size; i++)
+	try
 	{
-		int id = in.read_int();
-		char *path = in.read_str();
-		get_id(path);
-		free(path);
+		int size = in.read_int();
+		for (int i = 0; i < size; i++)
+		{
+			int id = in.read_int();
+			char *path = in.read_str();
+			by_id.insert(std::pair<int, std::string>(id, path));
+			by_path.insert(std::pair<std::string, int>(path, id));
+			free(path);
+		}
+	}
+	catch (UnexpectedInputException &ex)
+	{
+		std::cout << "Unable to read old file list..." << std::endl;
 	}
 
 	return true;

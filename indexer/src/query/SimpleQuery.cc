@@ -7,6 +7,8 @@
 
 #include <query/SimpleQuery.h>
 
+#include "include/export.h"
+
 FileListQuery::FileListQuery(const char* word) :
 		current(-1),
 		it(word)
@@ -17,19 +19,17 @@ FileListQuery::~FileListQuery()
 {
 }
 
-bool FileListQuery::has_next()
+bool FileListQuery::has_next() const
 {
 	return it.has_next();
 }
 
-void FileListQuery::next()
+
+
+const QueryResults &FileListQuery::next()
 {
 	current = it.next();
-}
-
-void FileListQuery::display()
-{
-	printf("Found file containing given word: %d", current);
+	return current;
 }
 
 
@@ -49,13 +49,11 @@ void FileListQuery::display()
 FileOffsetListQuery::FileOffsetListQuery(const char* word_) :
 		word(word_),
 
-		current_file(-1),
-		current_offset(-1),
+		current(-1, -1),
 
 		oit(word),
 		iit(nullptr)
 {
-	next();
 }
 
 FileOffsetListQuery::~FileOffsetListQuery()
@@ -66,39 +64,93 @@ FileOffsetListQuery::~FileOffsetListQuery()
 	}
 }
 
-bool FileOffsetListQuery::has_next()
+bool FileOffsetListQuery::has_next() const
 {
-	return (iit == nullptr || !iit->has_next()) && !oit.has_next();
+	return oit.has_next() || (iit != nullptr && iit->has_next());
 }
 
-void FileOffsetListQuery::next()
+const QueryResults &FileOffsetListQuery::next()
 {
 	if (iit != nullptr && iit->has_next())
 	{
-		current_offset = iit->next();
-		return;
+		current.set_offset(iit->next());
+		return current;
 	}
 
 	while (iit == nullptr || !iit->has_next())
 	{
 		if (!oit.has_next())
 		{
-			return;
+			return current;
 		}
 
-		current_file = oit.next();
+		int fid = oit.next();
+		current.set_file(fid);
 		if (iit != nullptr)
 		{
 			delete iit;
 		}
 
-		iit = new OccuranceIterator(current_file, word);
+		iit = new OccuranceIterator(fid, word);
 	}
 
-	current_offset = iit->next();
+	current.set_offset(iit->next());
+
+	return current;
 }
 
-void FileOffsetListQuery::display()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FileListQueryResults::FileListQueryResults(file_id file_) :
+		file(file_)
 {
-	printf("File %d contains %s at offset %d\n", current_file, word, current_offset);
 }
+FileListQueryResults::~FileListQueryResults()
+{
+}
+
+void FileListQueryResults::display() const
+{
+	std::cout << "File " << get_file_mapper().get_path(file) << " matches." << std::endl;
+}
+
+FileOffsetListQueryResults::FileOffsetListQueryResults(file_id file_, int offset_) :
+		file(file_), offset(offset_)
+{
+}
+
+FileOffsetListQueryResults::~FileOffsetListQueryResults()
+{
+}
+
+void FileOffsetListQueryResults::display() const
+{
+	std::cout << "File " << get_file_mapper().get_path(file) << " matches at offset " << offset << "." << std::endl;
+}
+
+void FileOffsetListQueryResults::set_file(int file_)
+{
+	file = file_;
+}
+void FileOffsetListQueryResults::set_offset(int offset_)
+{
+	offset = offset_;
+}
+

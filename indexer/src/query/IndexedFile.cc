@@ -84,6 +84,11 @@ OccuranceIterator::OccuranceIterator(file_id file, const char *key) :
 	in(nullptr)
 {
 	const char *real_path = get_file_mapper().get_path(file);
+	if (real_path == nullptr)
+	{
+		std::cout << "No file with id " << file << std::endl;
+		return;
+	}
 	char *file_dir = get_file_or_dir(get_settings().get_files_base_dir(), real_path, true);
 	if (file_dir == nullptr)
 	{
@@ -107,6 +112,9 @@ OccuranceIterator::OccuranceIterator(file_id file, const char *key) :
 		in = nullptr;
 	}
 
+	// throw away word...
+	free(in->read_str());
+
 	try
 	{
 		num = in->read_int();
@@ -125,7 +133,7 @@ OccuranceIterator::~OccuranceIterator()
 	}
 }
 
-bool OccuranceIterator::has_next()
+bool OccuranceIterator::has_next() const
 {
 	return in != nullptr
 			&& count < num;

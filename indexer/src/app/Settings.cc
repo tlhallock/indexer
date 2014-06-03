@@ -21,7 +21,7 @@ const Settings &get_settings()
 
 Settings::Settings()
 {
-#if 0
+#if 1
 	home_folder = "/home/thallock/.indexes";
 #else
 	home_folder = "/home/rever/.indexes";
@@ -76,6 +76,11 @@ bool Settings::use_massive_storage() const
 }
 
 bool Settings::include_small_words() const
+{
+	return true;
+}
+
+bool Settings::index_files() const
 {
 	return true;
 }

@@ -23,8 +23,8 @@ int main(int argc, char **argv)
 
 	FileOffsetListQuery q(str);
 
-//	double time = q.run();
-//	std::cout << "Took " << time << "ms\n";
+	double time = q.run();
+	std::cout << "Took " << time << "ms\n";
 
 	return 0;
 }

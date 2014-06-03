@@ -10,6 +10,8 @@
 
 #include "include/common.h"
 
+#define INVALID_FILE (-1)
+
 class FileMapper
 {
 public:
@@ -27,7 +29,7 @@ public:
 	bool read();
 private:
 	boost::unordered_map<std::string, file_id> by_path;
-	std::map<file_id, const char *> by_id;
+	boost::unordered_map<int, std::string> by_id;
 };
 
 FileMapper &get_file_mapper();

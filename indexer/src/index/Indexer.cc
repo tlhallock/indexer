@@ -12,6 +12,11 @@
 void index(const char *path)
 {
 	file_id file = get_file_mapper().get_id(path);
+	if (file == INVALID_FILE)
+	{
+		return;
+	}
+
 	fprintf(stdout, "Indexing %d: %s\n", file, path);
 
 	IndexedFile ifile(file);
@@ -23,12 +28,28 @@ void index(const char *path)
 	WordAccumulator accum(&ifile);
 
 	Tokenizer t{file};
-	const char *token = NULL;
-	while ((token = t.next()) != NULL)
+	const char *token = nullptr;
+	while ((token = t.next()) != nullptr)
 	{
-		SubstringIterator subs(token);
+		if (!get_settings().include_small_words() && strlen(token) <= 2)
+		{
+			continue;
+		}
+
 		get_index_entry_cache().get_index_entry(token).add_file(file);
 
+		if (!get_settings().index_files())
+		{
+			continue;
+		}
+
+		if (!get_settings().use_massive_storage())
+		{
+			accum.append(token, 13);
+			continue;
+		}
+
+		SubstringIterator subs(token);
 		while (subs.has_next())
 		{
 			accum.append(subs.current(), subs.offset());
@@ -36,7 +57,10 @@ void index(const char *path)
 		}
 	}
 
-	accum.save();
+	if (get_settings().index_files())
+	{
+		accum.save();
+	}
 	get_index_entry_cache().flush();
 
 	std::cout << "Number of entries in the IndexEntryCache: " << get_index_entry_cache().get_size() << std::endl;

@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <climits>
+#include <cstdio>
 
 #include <set>
 #include <map>

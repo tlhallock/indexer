@@ -12,18 +12,44 @@
 #include "query/IndexEntry.h"
 #include "query/IndexedFile.h"
 
+class FileListQueryResults : public QueryResults
+{
+public:
+	FileListQueryResults(file_id file_);
+	~FileListQueryResults();
+
+	void display() const;
+private:
+	file_id file;
+};
+
 class FileListQuery : public Query
 {
 public:
 	FileListQuery(const char *word);
 	virtual ~FileListQuery();
 
-	bool has_next();
-	void next();
-	void display();
+	bool has_next() const;
+	const QueryResults &next();
 private:
-	file_id current;
+	FileListQueryResults current;
 	IndexEntryIterater it;
+};
+
+
+class FileOffsetListQueryResults : public QueryResults
+{
+public:
+	FileOffsetListQueryResults(file_id file_, int offset_);
+	~FileOffsetListQueryResults();
+
+	void display() const;
+
+	void set_file(int file_);
+	void set_offset(int offset_);
+private:
+	file_id file;
+	int offset;
 };
 
 class FileOffsetListQuery : public Query
@@ -32,14 +58,12 @@ public:
 	FileOffsetListQuery(const char *word);
 	virtual ~FileOffsetListQuery();
 
-	bool has_next();
-	void next();
-	void display();
+	bool has_next() const;
+	const QueryResults &next();
 private:
 	const char *word;
 
-	file_id current_file;
-	int current_offset;
+	FileOffsetListQueryResults current;
 
 	IndexEntryIterater oit;
 	OccuranceIterator *iit;
