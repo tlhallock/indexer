@@ -20,6 +20,7 @@ public:
 	virtual ~Tokenizer();
 
 	const char *next();
+	long last_start();
 private:
 	const char *current_string();
 	void ensure(size_t size);
@@ -35,6 +36,8 @@ private:
 	char next_char;
 	int unreadable;
 	long bytes_read;
+
+	long last_index;
 };
 
 #endif /* TOKENIZER_H_ */

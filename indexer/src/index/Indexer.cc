@@ -9,6 +9,40 @@
 
 #include "include/export.h"
 
+static void add_word(const char *token, int offset, file_id file, WordAccumulator &accum)
+{
+	get_index_entry_cache().get_index_entry(token).add_file(file);
+	if (!get_settings().use_massive_storage())
+	{
+		get_strings_list().add(token);
+	}
+	if (get_settings().index_files())
+	{
+		accum.append(token, offset);
+	}
+}
+
+static void encountered_token(const char *token, int offset, file_id file, WordAccumulator &accum)
+{
+	if (!get_settings().include_small_words() && strlen(token) <= 2)
+	{
+		return;
+	}
+
+	if (!get_settings().use_massive_storage())
+	{
+		add_word(token, offset, file, accum);
+		return;
+	}
+
+	SubstringIterator subs(token);
+	while (subs.has_next())
+	{
+		add_word(subs.current(), offset + subs.offset(), file, accum);
+		subs.next();
+	}
+}
+
 void index(const char *path)
 {
 	file_id file = get_file_mapper().get_id(path);
@@ -31,30 +65,7 @@ void index(const char *path)
 	const char *token = nullptr;
 	while ((token = t.next()) != nullptr)
 	{
-		if (!get_settings().include_small_words() && strlen(token) <= 2)
-		{
-			continue;
-		}
-
-		get_index_entry_cache().get_index_entry(token).add_file(file);
-
-		if (!get_settings().index_files())
-		{
-			continue;
-		}
-
-		if (!get_settings().use_massive_storage())
-		{
-			accum.append(token, 13);
-			continue;
-		}
-
-		SubstringIterator subs(token);
-		while (subs.has_next())
-		{
-			accum.append(subs.current(), subs.offset());
-			subs.next();
-		}
+		encountered_token(token, t.last_start(), file, accum);
 	}
 
 	if (get_settings().index_files())

@@ -72,7 +72,7 @@ double Settings::get_max_unreadable_percentage() const
 
 bool Settings::use_massive_storage() const
 {
-	return true;
+	return false;
 }
 
 bool Settings::include_small_words() const

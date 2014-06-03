@@ -71,12 +71,6 @@ bool FileOffsetListQuery::has_next() const
 
 const QueryResults &FileOffsetListQuery::next()
 {
-	if (iit != nullptr && iit->has_next())
-	{
-		current.set_offset(iit->next());
-		return current;
-	}
-
 	while (iit == nullptr || !iit->has_next())
 	{
 		if (!oit.has_next())
@@ -95,7 +89,6 @@ const QueryResults &FileOffsetListQuery::next()
 	}
 
 	current.set_offset(iit->next());
-
 	return current;
 }
 

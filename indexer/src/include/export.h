@@ -6,14 +6,16 @@
 
 #include "index/FileManager.h"
 #include "index/Indexer.h"
+#include "index/StringsList.h"
 #include "index/SubstringIterator.h"
 #include "index/Tokenizer.h"
 #include "index/WordAccumulator.h"
 
 #include "query/IndexedFile.h"
 #include "query/IndexEntry.h"
-#include "query/SimpleQuery.h"
 #include "query/Query.h"
+#include "query/SimpleQuery.h"
+#include "query/SuperStringQuery.h"
 
 #include "utils/boost_file_utils.h"
 #include "utils/DataOutputStream.h"

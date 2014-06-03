@@ -75,6 +75,7 @@ bool Tokenizer::is_binary() const
 
 const char *Tokenizer::next()
 {
+
 	if (is_binary())
 	{
 		return NULL;
@@ -82,6 +83,8 @@ const char *Tokenizer::next()
 
 	if (next_char != '\0')
 	{
+		last_index = bytes_read - 1;
+
 		buff[0] = next_char;
 		buff[1] = '\0';
 
@@ -89,10 +92,13 @@ const char *Tokenizer::next()
 		return buff;
 	}
 
+	last_index = bytes_read;
+
 	for (;;)
 	{
 		int c = fgetc(file);
 		bytes_read++;
+
 		if (c < 0)
 		{
 			if (index == 0)
@@ -113,6 +119,7 @@ const char *Tokenizer::next()
 			{
 				return NULL;
 			}
+			last_index = bytes_read;
 		}
 
 		if (delim || !alpha)
@@ -156,4 +163,9 @@ void Tokenizer::ensure(size_t size)
 
 	buff_size *= 2;
 	buff = (char *) realloc(buff, buff_size);
+}
+
+long Tokenizer::last_start()
+{
+	return last_index;
 }

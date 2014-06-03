@@ -21,10 +21,21 @@ int main(int argc, char **argv)
 	std::cout << "Number of files: " << get_file_mapper().get_num_files() << "\n";
 	std::cout << "Files containing " << str << ":\n";
 
-	FileOffsetListQuery q(str);
+	Query *q;
+	if (get_settings().use_massive_storage())
+	{
+		q = new FileOffsetListQuery(str);
+	}
+	else
+	{
+		q = new SuperStringQuery(str);
+	}
 
-	double time = q.run();
+	double time = q->run();
 	std::cout << "Took " << time << "ms\n";
+
+
+	delete q;
 
 	return 0;
 }
