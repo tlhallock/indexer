@@ -7,14 +7,6 @@
 
 #include <query/QueryBuilder.h>
 
-QueryBuilder::QueryBuilder()
-{
-	// TODO Auto-generated constructor stub
-
-}
-
-QueryBuilder::~QueryBuilder()
-{
-	// TODO Auto-generated destructor stub
-}
+QueryBuilder::QueryBuilder() {}
+QueryBuilder::~QueryBuilder() {}
 

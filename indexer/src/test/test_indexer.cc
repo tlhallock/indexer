@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	std::cout << "Files containing " << str << ":\n";
 
 	Query *q;
-	if (get_settings().use_massive_storage())
+	if (get_settings().should_index_substrings())
 	{
 		q = new FileOffsetListQuery(str);
 	}

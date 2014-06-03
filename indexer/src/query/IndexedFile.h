@@ -12,10 +12,14 @@
 
 #include "utils/DataOutputStream.h"
 
+class IndexedFile;
+
 class OccuranceIterator
 {
 public:
 	OccuranceIterator(file_id file, const char *key);
+	OccuranceIterator(const IndexedFile &ifile, const char *key);
+
 	~OccuranceIterator();
 
 	bool has_next() const;

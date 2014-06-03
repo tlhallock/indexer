@@ -9,7 +9,6 @@
 
 #include "include/export.h"
 
-
 QueryResults::QueryResults() {}
 QueryResults::~QueryResults() {}
 

@@ -70,17 +70,17 @@ double Settings::get_max_unreadable_percentage() const
 	return .1;
 }
 
-bool Settings::use_massive_storage() const
+bool Settings::should_index_substrings() const
 {
 	return false;
 }
 
-bool Settings::include_small_words() const
+bool Settings::should_small_words() const
 {
 	return true;
 }
 
-bool Settings::index_files() const
+bool Settings::should_index_files() const
 {
 	return true;
 }

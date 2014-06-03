@@ -12,11 +12,11 @@
 static void add_word(const char *token, int offset, file_id file, WordAccumulator &accum)
 {
 	get_index_entry_cache().get_index_entry(token).add_file(file);
-	if (!get_settings().use_massive_storage())
+	if (!get_settings().should_index_substrings())
 	{
 		get_strings_list().add(token);
 	}
-	if (get_settings().index_files())
+	if (get_settings().should_index_files())
 	{
 		accum.append(token, offset);
 	}
@@ -24,12 +24,12 @@ static void add_word(const char *token, int offset, file_id file, WordAccumulato
 
 static void encountered_token(const char *token, int offset, file_id file, WordAccumulator &accum)
 {
-	if (!get_settings().include_small_words() && strlen(token) <= 2)
+	if (!get_settings().should_small_words() && strlen(token) <= 2)
 	{
 		return;
 	}
 
-	if (!get_settings().use_massive_storage())
+	if (!get_settings().should_index_substrings())
 	{
 		add_word(token, offset, file, accum);
 		return;
@@ -68,7 +68,7 @@ void index(const char *path)
 		encountered_token(token, t.last_start(), file, accum);
 	}
 
-	if (get_settings().index_files())
+	if (get_settings().should_index_files())
 	{
 		accum.save();
 	}
