@@ -17,7 +17,8 @@ Tokenizer::Tokenizer(FileId file_) :
 	buff((char *) malloc (sizeof(*buff) * buff_size)),
 	next_char('\0'),
 	unreadable(0),
-	bytes_read(0) {}
+	bytes_read(0),
+	last_index(0) {}
 
 Tokenizer::~Tokenizer()
 {
