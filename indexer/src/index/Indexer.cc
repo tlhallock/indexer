@@ -24,6 +24,8 @@ static void add_word(const char *token, int offset, FileId file, WordAccumulator
 
 static void encountered_token(const char *token, int offset, FileId file, WordAccumulator &accum)
 {
+	get_exp_index().add(token);
+
 	if (!get_settings().should_small_words() && strlen(token) <= 2)
 	{
 		return;
@@ -75,6 +77,8 @@ void index(const char *path)
 	get_index_entry_cache().flush();
 
 	std::cout << "Number of entries in the IndexEntryCache: " << get_index_entry_cache().get_size() << std::endl;
+	std::cout << "Number of entries in the String List: " << get_strings_list().count() << std::endl;
+	std::cout << "Number of entries in the exp index: " << get_exp_index().count() << std::endl;
 }
 
 static void index_function(int len, const char *path)

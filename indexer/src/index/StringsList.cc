@@ -72,3 +72,8 @@ StringsList& get_strings_list()
 	}
 	return *list;
 }
+
+int StringsList::count() const
+{
+	return words.size();
+}

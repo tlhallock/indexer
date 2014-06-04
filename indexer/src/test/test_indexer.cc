@@ -10,13 +10,21 @@
 #if 1
 int main(int argc, char **argv)
 {
-//	delete_file(get_settings().get_base_dir());
+	delete_file(get_settings().get_base_dir());
 
 	const char *str = "foo";
 
 	index_all("./src");
 
 	get_file_mapper().write();
+
+	get_exp_index().print();
+
+
+	if (true)
+	{
+		return 0;
+	}
 
 	std::cout << "Number of files: " << get_file_mapper().get_num_files() << "\n";
 	std::cout << "Files containing " << str << ":\n";

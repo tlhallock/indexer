@@ -4,6 +4,8 @@
 
 #include "include/common.h"
 
+#include "experimental/SubstringIndex.h"
+
 #include "index/FileManager.h"
 #include "index/Indexer.h"
 #include "index/StringsList.h"
