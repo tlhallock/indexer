@@ -25,7 +25,7 @@ SubstringIterator::~SubstringIterator()
 	free(cur_value);
 }
 
-bool SubstringIterator::has_next()
+bool SubstringIterator::has_next() const
 {
 	return current_end != current_start;
 }

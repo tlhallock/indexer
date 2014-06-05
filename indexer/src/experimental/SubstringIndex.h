@@ -10,35 +10,22 @@
 
 #include "include/common.h"
 
-class StringListIterator;
+#include "utils/StringIterator.h"
 
-class StringList
-{
-	friend class StringListIterator;
-public:
-	StringList(std::string *str, StringList *next);
-	~StringList();
-
-	bool contains(std::string *str) const;
-	void print() const;
-private:
-	std::string *str;
-	StringList *next;
-};
-
-class StringListIterator
+class StringListIterator : public StringIterator
 {
 public:
-	StringListIterator(std::string str, StringList *first);
+	StringListIterator(const std::string &str, const std::set<std::string> &set);
 	~StringListIterator();
 
 	bool has_next() const;
-	const char *next;
+	const char *next();
 private:
 	void search();
 
 	std::string str;
-	StringList *current;
+	std::set<std::string>::iterator end;
+	std::set<std::string>::iterator it;
 };
 
 class SubstringIndex
@@ -54,7 +41,7 @@ public:
 	int count() const;
 private:
 	int n;
-	boost::unordered_map<std::string, std::pair<int, StringList *>> cache;
+	boost::unordered_map<std::string, std::set<std::string>> cache;
 };
 
 SubstringIndex &get_exp_index();

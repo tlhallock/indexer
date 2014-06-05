@@ -10,9 +10,11 @@
 
 #include "include/common.h"
 
+#include "utils/StringIterator.h"
+
 class StringsList;
 
-class SuperStringIterator
+class SuperStringIterator : public StringIterator
 {
 	friend class StringsList;
 public:

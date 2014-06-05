@@ -10,6 +10,8 @@
 
 #include "include/common.h"
 
+#include "utils/StringIterator.h"
+
 #include "index/StringsList.h"
 
 #include "query/Query.h"
@@ -18,15 +20,15 @@
 class SuperStringQuery : public Query
 {
 public:
-	SuperStringQuery(const char *query);
+	SuperStringQuery(std::unique_ptr<StringIterator> && iterator, const char *query);
 	virtual ~SuperStringQuery();
 
 	bool has_next() const;
 	const QueryResults &next();
 
 private:
-	SuperStringIterator outer;
-	FileOffsetListQuery *subquery;
+	std::unique_ptr<StringIterator> outer;
+	std::unique_ptr<FileOffsetListQuery> subquery;
 };
 
 #endif /* SUPERSTRINGQUERY_H_ */

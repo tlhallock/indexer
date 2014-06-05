@@ -9,14 +9,11 @@
 
 #include "include/export.h"
 
-DataOutputStream::DataOutputStream(const char *path) :
-		file(try_to_open(path, "w")),
-		success(file != nullptr)
+DataOutputStream::DataOutputStream(const char *path_) :
+		file(try_to_open(path_, "w")),
+		success(file != nullptr),
+		path(strdup(path_))
 {
-//	if (success)
-//	{
-//		fseek(file, 0, SEEK_SET);
-//	}
 }
 
 DataOutputStream::~DataOutputStream()
@@ -25,6 +22,7 @@ DataOutputStream::~DataOutputStream()
 	{
 		fclose(file);
 	}
+	free((char *) path);
 }
 
 void DataOutputStream::write(int i)
@@ -151,11 +149,13 @@ long int DataInputStream::read_long() throw (UnexpectedInputException)
 	return ret_val;
 }
 
-char *DataInputStream::read_str() throw (UnexpectedInputException)
+std::unique_ptr<std::string> DataInputStream::read_str() throw (UnexpectedInputException)
 {
+	char *ret_val;
+
 	if (get_settings().human_readable_indices())
 	{
-		char *ret_val = nullptr;
+		ret_val = nullptr;
 		size_t size = 0;
 
 		if (getline(&ret_val, &size, file) == -1)
@@ -163,23 +163,35 @@ char *DataInputStream::read_str() throw (UnexpectedInputException)
 			throw UnexpectedInputException(path);
 		}
 		ret_val[strlen(ret_val) - 1] = '\0';
-
-		return ret_val;
 	}
 	else
 	{
 		int len = read_int();
-		char *ret_val = (char *) malloc(sizeof(*ret_val) * (len + 1));
+		ret_val = (char *) malloc(sizeof(*ret_val) * (len + 1));
 		for (int i = 0; i < len; i++)
 		{
 			ret_val[i] = fgetc(file);
 		}
-		return ret_val;
+		ret_val[len] = '\0';
 	}
+
+	std::unique_ptr<std::string> ret(new std::string(ret_val));
+	free(ret_val);
+	return ret;
 }
 
 
 bool DataInputStream::successful()
 {
 	return success;
+}
+
+const char* DataInputStream::get_path() const
+{
+	return path;
+}
+
+const char* DataOutputStream::get_path()
+{
+	return path;
 }

@@ -131,10 +131,9 @@ bool FileMapper::read()
 		for (int i = 0; i < size; i++)
 		{
 			int id = in.read_int();
-			char *path = in.read_str();
+			std::string path(*in.read_str());
 			by_id.insert(std::pair<int, std::string>(id, path));
 			by_path.insert(std::pair<std::string, int>(path, id));
-			free(path);
 		}
 	}
 	catch (UnexpectedInputException &ex)

@@ -30,7 +30,7 @@ Settings::Settings()
 	words_base_dir = concatenate(home_folder, "/words.d");
 	files_base_dir = concatenate(home_folder, "/files.d");
 	files_file = concatenate(home_folder, "/files.txt");
-
+	super_strings_base_dir = concatenate(home_folder, "/superstrings.d");
 }
 
 Settings::~Settings()
@@ -38,6 +38,7 @@ Settings::~Settings()
 	free((char *) words_base_dir);
 	free((char *) files_base_dir);
 	free((char *) files_file);
+	free((char *) super_strings_base_dir);
 }
 
 const char* Settings::get_base_dir() const
@@ -75,11 +76,6 @@ bool Settings::should_index_substrings() const
 	return false;
 }
 
-bool Settings::should_small_words() const
-{
-	return true;
-}
-
 bool Settings::should_index_files() const
 {
 	return true;
@@ -88,4 +84,20 @@ bool Settings::should_index_files() const
 bool Settings::human_readable_indices() const
 {
 	return true;
+}
+
+
+int Settings::get_maximum_substring_index() const
+{
+	return 4;
+}
+
+int Settings::get_minimum_substring_index() const
+{
+	return 3;
+}
+
+const char* Settings::get_super_string_base_dir() const
+{
+	return super_strings_base_dir;
 }

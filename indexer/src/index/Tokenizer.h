@@ -10,6 +10,9 @@
 
 #include "include/common.h"
 
+
+// could be a string iterator...
+
 bool is_delimiter(const char &c);
 bool is_alpha_numeric(const char &c);
 

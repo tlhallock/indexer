@@ -62,38 +62,25 @@ void WordAccumulator::save() const
 	for (auto wit = words.begin(); wit != wend; ++wit)
 	{
 		const char *key = wit->first.c_str();
-		char *key_file = get_file_or_dir(file->get_index_path(), key, false);
-		if (key_file == nullptr)
-		{
-			puts("Failure 510975610356");
-			continue;
-		}
 
-		DataOutputStream out(key_file);
-		if (!out.successful())
+		std::unique_ptr<DataOutputStream> out(write_file_index(file->get_real_path(), key));
+		if (out == nullptr || !out->successful())
 		{
-			std::cout << "Unable to open " << key_file << " for writing\n";
+			std::cout << "Unable to open index for " << file->get_real_path() << "::" << key << " for writing\n";
 			continue;
 		}
-		free(key_file);
 
 		std::set<int> &s = *orders.at(wit->second);
 
-		out.write(key);
-		out.write((int) s.size());
+		out->write((int) s.size());
 
 		auto send = s.end();
 		for (auto sit = s.begin(); sit != send; ++sit)
 		{
-			int offset = *sit;
-			out.write(offset);
+			out->write(*sit);
 		}
 	}
 
-	{
-		DataOutputStream o(file->get_index_attr_path());
-		o.write(file->get_real_path());
-		o.write(read_time);
-	}
+	write_file_index(file->get_real_path(), nullptr)->write(read_time);
 }
 

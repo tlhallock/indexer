@@ -21,7 +21,9 @@
 #include <map>
 #include <vector>
 #include <memory>
+
 #include <bits/shared_ptr.h>
+#include <bits/unique_ptr.h>
 
 #if 0
 	#include <unordered_map>

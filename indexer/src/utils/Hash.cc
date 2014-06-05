@@ -53,52 +53,173 @@ void Hash::print(char *out, int collision_num)
 	strcat(out, buff);
 }
 
-char *get_file_or_dir(const char *dir, const char *key, bool is_dir)
+
+static std::unique_ptr<DataInputStream> single_hash(const char *dir, const char *key)
 {
-	if (!*dir || !*key)
+	if (dir == nullptr || !*dir || key == nullptr || !*key)
 	{
 		return nullptr;
 	}
 
-	int collision_count = 0;
-	Hash h(key);
-	char fname[NUM_MAX_HASH_CHARS];
+	int file_collision_count = 0;
 
-	char *out = (char *) malloc (sizeof(*out) * (strlen(dir) + 1 + NUM_MAX_HASH_CHARS + 5 + 1));
+	Hash k(key);
+
+	char *out = (char *) malloc (sizeof(*out) * (strlen(dir) + 1 + NUM_MAX_HASH_CHARS + 1));
 	out[0] = '\0';
 
-	bool match = false;
+	sprintf(out, "%s/", dir);
+
+	char *dir_offset = out + strlen(out);
+
 	do
 	{
-		h.print(fname, collision_count++);
+		k.print(dir_offset, file_collision_count);
 
-		if (is_dir)
+		std::unique_ptr<DataInputStream> in(new DataInputStream(out));
+		if (!in->successful())
 		{
-			sprintf(out, "%s/%s/index", dir, fname);
+			return in;
+		}
+
+		if (in->read_str()->compare(key) != 0)
+		{
+			file_collision_count++;
+			continue;
+		}
+
+		return in;
+	} while (file_collision_count >= 0);
+
+	puts("56109760539706531976531");
+	exit(1);
+}
+
+
+std::unique_ptr<DataInputStream> read_file_index(const char *original_file_name, const char *key)
+{
+	if (original_file_name == nullptr || !*original_file_name || (key != nullptr && !*key))
+	{
+		return nullptr;
+	}
+
+	int file_collision_count = 0;
+	int  key_collision_count = 0;
+
+	Hash f(original_file_name);
+	std::unique_ptr<Hash> k(key == nullptr ? nullptr : new Hash(key));
+
+	const char *dir = get_settings().get_files_base_dir();
+
+	char *out = (char *) malloc (sizeof(*out) * (strlen(dir) + 1 + NUM_MAX_HASH_CHARS + 1 + NUM_MAX_HASH_CHARS + 1));
+	out[0] = '\0';
+
+	sprintf(out, "%s/", dir);
+
+	char *dir_offset = out + strlen(out);
+
+	do
+	{
+		f.print(dir_offset, file_collision_count);
+		char *koffset = out + strlen(out);
+		if (key == nullptr)
+		{
+			koffset[0] = 'i';
+			koffset[1] = 'n';
+			koffset[2] = 'd';
+			koffset[3] = 'e';
+			koffset[4] = 'x';
+			koffset[5] = '\0';
 		}
 		else
 		{
-			sprintf(out, "%s/%s", dir, fname);
+			k->print(koffset, key_collision_count);
 		}
 
-		DataInputStream in(out);
-		if (!in.successful())
+		std::unique_ptr<DataInputStream> in(new DataInputStream(out));
+		if (!in->successful())
 		{
-			break;
+			return in;
 		}
-		char *token = in.read_str();
-		match = strcmp(token, key);
-		free(token);
-	} while (match && collision_count > 0);
 
-	if (collision_count < 0)
+		if (in->read_str()->compare(original_file_name) != 0)
+		{
+			file_collision_count++;
+			continue;
+		}
+		if (key != nullptr && in->read_str()->compare(key) != 0)
+		{
+			key_collision_count++;
+			continue;
+		}
+
+		return in;
+	} while (file_collision_count >= 0 && key_collision_count >= 0);
+
+	puts("56109760539706531976531");
+	exit(1);
+}
+
+std::unique_ptr<DataOutputStream> write_file_index(const char *original_file_name, const char *key)
+{
+	std::unique_ptr<DataInputStream> in = read_file_index(original_file_name, key);
+	if (in.get() == nullptr)
 	{
-		puts("56109760539706531976531");
-		exit(0);
+		return nullptr;
 	}
-
-	sprintf(out, "%s/%s", dir, fname);
-
+	std::unique_ptr<DataOutputStream> out(new DataOutputStream(in->get_path()));
+	out->write(original_file_name);
+	if (key != nullptr)
+	{
+		out->write(key);
+	}
 	return out;
 }
 
+std::unique_ptr<DataInputStream> read_word_index(const char *key)
+{
+	return single_hash(get_settings().get_words_base_dir(), key);
+}
+std::unique_ptr<DataOutputStream> write_word_index(const char *key)
+{
+	std::unique_ptr<DataInputStream> in = read_word_index(key);
+	if (in.get() == nullptr)
+	{
+		return nullptr;
+	}
+	std::unique_ptr<DataOutputStream> out(new DataOutputStream(in->get_path()));
+	out->write(key);
+	return out;
+}
+
+std::unique_ptr<DataInputStream> read_super_string_index(const char *key)
+{
+	return single_hash(get_settings().get_super_string_base_dir(), key);
+}
+
+std::unique_ptr<DataOutputStream> write_super_string_index(const char *key)
+{
+	std::unique_ptr<DataInputStream> in = read_super_string_index(key);
+	if (in.get() == nullptr)
+	{
+		return nullptr;
+	}
+	std::unique_ptr<DataOutputStream> out(new DataOutputStream(in->get_path()));
+	out->write(key);
+	return out;
+}
+
+void remove_file_index(const char* original_file_name)
+{
+	// everything gets removed anyway...
+}
+
+void remove_word_index(const char* key)
+{
+	// everything gets removed anyway...
+}
+
+void remove_super_string_index(const char* key)
+{
+	// everything gets removed anyway...
+}

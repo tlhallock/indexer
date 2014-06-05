@@ -15,31 +15,13 @@ SubstringIndex::SubstringIndex(int n_) :
 
 SubstringIndex::~SubstringIndex()
 {
-	auto end = cache.end();
-	for (auto it = cache.begin(); it != end; ++it)
-	{
-		delete it->second.second;
-	}
 }
 
-StringList::StringList(std::string* str_, StringList* next_) :
+
+StringListIterator::StringListIterator(const std::string &str_, const std::set<std::string> &set) :
 		str(str_),
-		next(next_)
-{
-}
-
-StringList::~StringList()
-{
-	if (next != nullptr)
-	{
-		delete next;
-	}
-	// str causes a memory leak...
-}
-
-StringListIterator::StringListIterator(std::string str_, StringList* first_) :
-		str(str_),
-		current(first_)
+		end(set.end()),
+		it(set.begin())
 {
 	search();
 }
@@ -50,67 +32,60 @@ StringListIterator::~StringListIterator()
 
 bool StringListIterator::has_next() const
 {
-	return current != nullptr;
+	return it != end;
 }
 
 void StringListIterator::search()
 {
-	StringList *ptr = current;
-	current = nullptr;
-	while (ptr != nullptr)
+	while (it != end)
 	{
-		if (ptr->str->find(str) != std::string::npos)
+		if (it->find(str) != std::string::npos)
 		{
-			current = ptr;
 			break;
 		}
 
-		ptr = ptr->next;
+		++it;
 	}
 }
 
 void SubstringIndex::add(const char* word)
 {
-	int len = strlen(word);
-	if (len < n)
-	{
-		return;
-	}
+//	int len = strlen(word);
+//	if (len < n)
+//	{
+//		return;
+//	}
+//
+//	char *substr = (char *) alloca (sizeof(*substr) * (n + 1));
+//
+//	for (int i = 0; i < len - n + 1; i++)
+//	{
+//		for (int j = 0; j < n; j++)
+//		{
+//			substr[j] = word[i + j];
+//		}
+//		substr[n] = '\0';
 
-	char *substr = (char *) alloca (sizeof(*substr) * (n + 1));
-
-	std::string *single = new std::string(word);
-
-	for (int i = 0; i < len - n + 1; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			substr[j] = word[i + j];
-		}
-		substr[n] = '\0';
+	const char *substr = word;
 
 		auto it = cache.find(substr);
 		if (it != cache.end())
 		{
-			StringList *l = it->second.second;
-			if (l->contains(single))
-			{
-				continue;
-			}
-			it->second.first++;
-			it->second.second = new StringList(single, it->second.second);
+			it->second.insert(word);
 		}
 		else
 		{
-			cache.insert(
-					std::pair<std::string, std::pair<int, StringList *>>(substr,
-							std::pair<int, StringList *>(1, new StringList(single, nullptr))));
+			std::set<std::string> *set = new std::set<std::string>;
+			set->insert(word);
+			cache.insert(std::pair<std::string, std::set<std::string>>(substr, *set));
+			delete set;
 		}
-	}
+//	}
 }
 
 StringListIterator* SubstringIndex::iterator(const char* word) const
 {
+	// could be much smarter about this...
 	char *substr = strndup(word, n);
 	auto it = cache.find(substr);
 	free(substr);
@@ -119,23 +94,10 @@ StringListIterator* SubstringIndex::iterator(const char* word) const
 	{
 		return nullptr;
 	}
-	return new StringListIterator(word, it->second.second);
+
+	return new StringListIterator(word, it->second);
 }
 
-bool StringList::contains(std::string* str_) const
-{
-	if (str->compare(*str_) == 0)
-	{
-		return true;
-	}
-
-	if (next == nullptr)
-	{
-		return false;
-	}
-
-	return next->contains(str_);
-}
 
 void SubstringIndex::print() const
 {
@@ -147,8 +109,13 @@ void SubstringIndex::print() const
 	auto end = cache.end();
 	for (auto it = cache.begin(); it != end; ++it)
 	{
-		std::cout << it->first << " (" << it->second.first << ") :\n\t";
-		it->second.second->print();
+		std::cout << it->first << " (" << it->second.size() << ") :\n\t";
+		auto iend = it->second.end();
+		for (auto iit = it->second.begin(); iit != iend; ++iit)
+		{
+			std::cout << "'" << *iit << "' ";
+		}
+		std::cout << std::endl;
 	}
 	for (int i = 0; i < 80; i++)
 	{
@@ -162,24 +129,11 @@ SubstringIndex& get_exp_index()
 	static SubstringIndex *index;
 	if (index == nullptr)
 	{
-		index = new SubstringIndex(2);
+		index = new SubstringIndex(3);
 	}
 	return *index;
 }
 
-void StringList::print() const
-{
-	std::cout << " '" << *str << "' ";
-
-	if (next == nullptr)
-	{
-		std::cout << std::endl;
-	}
-	else
-	{
-		next->print();
-	}
-}
 
 int SubstringIndex::count() const
 {
@@ -188,7 +142,7 @@ int SubstringIndex::count() const
 	auto end = cache.end();
 	for (auto it = cache.begin(); it != end; ++it)
 	{
-		count += it->second.first;
+		count += it->second.size();
 	}
 
 	return count;

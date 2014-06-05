@@ -13,28 +13,13 @@
 
 IndexedFile::IndexedFile(FileId file_) :
 	file(file_),
-	real_path(get_file_mapper().get_path(file)),
-	base_dir(get_file_or_dir(get_settings().get_files_base_dir(), real_path, true)),
-	index_path(concatenate(base_dir, META_FILE)) {}
+	real_path(get_file_mapper().get_path(file)) {}
 
-IndexedFile::~IndexedFile()
-{
-	free((char *)base_dir);
-	free((char *)index_path);
-}
+IndexedFile::~IndexedFile() {}
 
 void IndexedFile::clear()
 {
-	delete_file(base_dir);
-}
-
-const char *IndexedFile::get_index_path() const
-{
-	return base_dir;
-}
-const char *IndexedFile::get_index_attr_path() const
-{
-	return index_path;
+	remove_file_index(real_path);
 }
 
 const char *IndexedFile::get_real_path() const
@@ -44,13 +29,12 @@ const char *IndexedFile::get_real_path() const
 
 time_t IndexedFile::get_last_indexed_time() const
 {
-	DataInputStream in(index_path);
-	if (!in.successful())
+	std::unique_ptr<DataInputStream> in(read_file_index(get_real_path(), nullptr));
+	if (in == nullptr || !in->successful())
 	{
 		return (time_t) -1;
 	}
-	free(in.read_str()); // throw file name away
-	return in.read_long();
+	return in->read_long();
 }
 
 bool IndexedFile::needs_reindex() const
@@ -89,31 +73,7 @@ OccuranceIterator::OccuranceIterator(FileId file, const char *key) :
 		std::cout << "No file with id " << file << std::endl;
 		return;
 	}
-	char *file_dir = get_file_or_dir(get_settings().get_files_base_dir(), real_path, true);
-	if (file_dir == nullptr)
-	{
-		return;
-	}
-
-	char *file_path = get_file_or_dir(file_dir, key, false);
-	free(file_dir);
-
-	if (file_path == nullptr)
-	{
-		return;
-	}
-
-	in = new DataInputStream(file_path);
-	free(file_path);
-
-	if (!in->successful())
-	{
-		delete in;
-		in = nullptr;
-	}
-
-	// throw away word...
-	free(in->read_str());
+	in = read_file_index(real_path, key);
 
 	try
 	{
@@ -125,13 +85,7 @@ OccuranceIterator::OccuranceIterator(FileId file, const char *key) :
 		num = 0;
 	}
 }
-OccuranceIterator::~OccuranceIterator()
-{
-	if (in != nullptr)
-	{
-		delete in;
-	}
-}
+OccuranceIterator::~OccuranceIterator() {}
 
 bool OccuranceIterator::has_next() const
 {

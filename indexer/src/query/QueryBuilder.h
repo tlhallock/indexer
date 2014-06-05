@@ -21,4 +21,6 @@ public:
 	Query *build_query(const char *string);
 };
 
+QueryBuilder &get_builder();
+
 #endif /* QUERYBUILDER_H_ */

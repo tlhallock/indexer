@@ -18,7 +18,6 @@ class IndexEntryIterater
 {
 public:
 	IndexEntryIterater(const char *word);
-	IndexEntryIterater(const char *word, const char *path);
 
 	~IndexEntryIterater();
 
@@ -29,7 +28,7 @@ private:
 	void init(const char *word, const char *path);
 
 	int num_left;
-	DataInputStream *in;
+	std::unique_ptr<DataInputStream> in;
 };
 
 class IndexEntry
@@ -49,7 +48,6 @@ private:
 	IndexEntry(const char *token);
 
 	const char *word;
-	const char *path;
 	std::set<FileId> files;
 };
 

@@ -15,29 +15,17 @@ int main(int argc, char **argv)
 	const char *str = "foo";
 
 	index_all("./src");
+//	index_all("/media/thallock/0e53aea8-0c7a-4c02-9cba-f283a18835ba/work/cleanup/cef.old/chromium/src");
 
 	get_file_mapper().write();
 
 	get_exp_index().print();
 
-
-	if (true)
-	{
-		return 0;
-	}
-
 	std::cout << "Number of files: " << get_file_mapper().get_num_files() << "\n";
 	std::cout << "Files containing " << str << ":\n";
 
-	Query *q;
-	if (get_settings().should_index_substrings())
-	{
-		q = new FileOffsetListQuery(str);
-	}
-	else
-	{
-		q = new SuperStringQuery(str);
-	}
+
+	Query *q = get_builder().build_query(str);
 
 	double time = q->run();
 	std::cout << "Took " << time << "ms\n";

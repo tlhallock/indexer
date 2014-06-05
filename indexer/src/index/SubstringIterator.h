@@ -8,13 +8,15 @@
 #ifndef SUBSTRINGITERATOR_H_
 #define SUBSTRINGITERATOR_H_
 
-class SubstringIterator
+#include "utils/StringIterator.h"
+
+class SubstringIterator : public StringIterator
 {
 public:
 	SubstringIterator(const char *str_);
-	virtual ~SubstringIterator();
+	~SubstringIterator();
 
-	bool has_next();
+	bool has_next() const;
 	const char *next();
 
 	int offset();

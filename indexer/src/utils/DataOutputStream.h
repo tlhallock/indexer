@@ -40,7 +40,10 @@ public:
 	void write(long int i);
 
 	bool successful();
+
+	const char *get_path();
 private:
+	const char *path;
 	FILE *file;
 	bool success;
 };
@@ -52,10 +55,12 @@ public:
 	~DataInputStream();
 
 	int read_int() throw (UnexpectedInputException);
-	char *read_str() throw (UnexpectedInputException);
+	std::unique_ptr<std::string> read_str() throw (UnexpectedInputException);
 	long int read_long() throw (UnexpectedInputException);
 
 	bool successful();
+
+	const char *get_path() const;
 private:
 	const char *path;
 	FILE *file;

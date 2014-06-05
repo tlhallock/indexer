@@ -9,50 +9,16 @@
 
 #include "include/export.h"
 
-void IndexEntryIterater::init(const char *word, const char *path)
-{
-	if (path == nullptr)
-	{
-		return;
-	}
-
-	in = new DataInputStream(path);
-	if (!in->successful())
-	{
-		delete in;
-		in = nullptr;
-		return;
-	}
-
-	free(in->read_str());
-	num_left = in->read_int();
-}
-
 IndexEntryIterater::IndexEntryIterater(const char *word) :
-		num_left(0), in(nullptr)
+		num_left(0), in(read_word_index(word))
 {
-	char *path = get_file_or_dir(get_settings().get_words_base_dir(), word, false);
-
-	init(word, path);
-
-	free(path);
-}
-
-IndexEntryIterater::IndexEntryIterater(const char *word, const char *path) :
-		num_left(0), in(nullptr)
-{
-	init(word, path);
-}
-
-IndexEntryIterater::~IndexEntryIterater()
-{
-	if (in == nullptr)
+	if (in != nullptr)
 	{
-		return;
+		num_left = in->read_int();
 	}
-
-	delete in;
 }
+
+IndexEntryIterater::~IndexEntryIterater() {}
 
 bool IndexEntryIterater::has_next() const
 {
@@ -76,11 +42,11 @@ int IndexEntryIterater::get_num_left() const
 }
 
 IndexEntry::IndexEntry(const char* token) :
-	word(token),
-	path(get_file_or_dir(get_settings().get_words_base_dir(), word, false)),
+	word(strdup(token)),
 	files()
 {
-	IndexEntryIterater it(token, path);
+
+	IndexEntryIterater it(token);
 	while (it.has_next())
 	{
 		files.insert(it.next());
@@ -90,7 +56,6 @@ IndexEntry::IndexEntry(const char* token) :
 IndexEntry::~IndexEntry()
 {
 	free((char *) word);
-	free((char *) path);
 }
 
 void IndexEntry::add_file(FileId file)
@@ -100,11 +65,6 @@ void IndexEntry::add_file(FileId file)
 
 void IndexEntry::remove_file(FileId file)
 {
-//	auto it = files.find(file);
-//	if (it == files.end())
-//	{
-//		return;
-//	}
 	files.erase(file);
 }
 
@@ -115,31 +75,25 @@ int IndexEntry::get_num_refs() const
 
 void IndexEntry::save() const
 {
-	if (path == nullptr)
-	{
-		return;
-	}
-
 	if (get_num_refs() == 0)
 	{
-		delete_file(path);
+		remove_word_index(word);
 		return;
 	}
 
-	DataOutputStream out(path);
-	if (!out.successful())
+	std::unique_ptr<DataOutputStream> out(write_word_index(word));
+	if (out == nullptr)
 	{
-		printf("Can't open '%s' for saving!\n", path);
+		printf("Can't open '%s' for saving!\n", out->get_path());
 		exit(1);
 	}
 
-	out.write(word);
-	out.write((int) files.size());
+	out->write((int) files.size());
 
 	auto end = files.end();
 	for (auto it = files.begin(); it != end; ++it)
 	{
-		out.write(*it);
+		out->write(*it);
 	}
 }
 
@@ -175,7 +129,7 @@ IndexEntry& IndexEntryCache::get_index_entry(const char* token)
 	auto it = entries.find(token);
 	if (it == entries.end())
 	{
-		entry = new IndexEntry(strdup(token));
+		entry = new IndexEntry(token);
 		entries.insert(std::pair<std::string, IndexEntry *>(token, entry));
 	}
 	else
