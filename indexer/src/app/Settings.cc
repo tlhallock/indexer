@@ -89,12 +89,12 @@ bool Settings::human_readable_indices() const
 
 int Settings::get_maximum_substring_index() const
 {
-	return 4;
+	return 3;
 }
 
 int Settings::get_minimum_substring_index() const
 {
-	return 3;
+	return 1;
 }
 
 const char* Settings::get_super_string_base_dir() const

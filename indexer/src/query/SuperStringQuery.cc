@@ -9,9 +9,9 @@
 
 #include "include/export.h"
 
-SuperStringQuery::SuperStringQuery(std::unique_ptr<StringIterator> && iterator, const char *query) :
+SuperStringQuery::SuperStringQuery(StringIterator *iterator, const char *query) :
 		outer(iterator),
-		subquery(nullptr) {}
+		subquery() {}
 
 SuperStringQuery::~SuperStringQuery() {}
 
@@ -30,11 +30,7 @@ const QueryResults& SuperStringQuery::next()
 			exit(1);
 		}
 		const char *superstring = outer->next();
-		if (subquery != nullptr)
-		{
-			delete subquery;
-		}
-		subquery = new FileOffsetListQuery(superstring);
+		subquery = std::unique_ptr<FileOffsetListQuery>(new FileOffsetListQuery(superstring));
 	}
 
 	return subquery->next();

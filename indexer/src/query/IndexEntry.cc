@@ -12,6 +12,11 @@
 IndexEntryIterater::IndexEntryIterater(const char *word) :
 		num_left(0), in(read_word_index(word))
 {
+	if (!in->successful())
+	{
+		in = nullptr;
+		return;
+	}
 	if (in != nullptr)
 	{
 		num_left = in->read_int();

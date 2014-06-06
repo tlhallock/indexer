@@ -7,6 +7,8 @@
 
 #include <query/QueryBuilder.h>
 
+#include "include/export.h"
+
 QueryBuilder::QueryBuilder() {}
 QueryBuilder::~QueryBuilder()
 {
@@ -16,7 +18,7 @@ Query* QueryBuilder::build_query(const char* string)
 {
 	if (!get_settings().should_index_substrings())
 	{
-		return new SuperStringQuery(std::unique_ptr<StringIterator>(get_strings_list().iterator(string)), string);
+		return new SuperStringQuery(get_strings_list().iterator(string), string);
 	}
 
 	int len = strlen(string);
@@ -28,10 +30,11 @@ Query* QueryBuilder::build_query(const char* string)
 
 	if (len > get_settings().get_maximum_substring_index())
 	{
-		return new SuperStringQuery(std::unique_ptr<StringIterator>(get_exp_index().iterator(string)), string);
+		return new SuperStringQuery(get_exp_index().iterator(string), string);
 	}
 
-	return new FileOffsetListQuery(string);
+	return new SuperStringQuery(get_exp_index().iterator(string), string);
+//	return new FileOffsetListQuery(string);
 }
 
 QueryBuilder& get_builder()

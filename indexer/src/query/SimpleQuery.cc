@@ -85,7 +85,7 @@ const QueryResults &FileOffsetListQuery::next()
 			delete iit;
 		}
 
-		iit = new OccuranceIterator(fid, word);
+		iit = create_occurance_iterator(fid, word);
 	}
 
 	current.set_offset(iit->next());

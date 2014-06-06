@@ -23,7 +23,7 @@ public:
 	virtual ~Tokenizer();
 
 	const char *next();
-	long last_start();
+	FileOffset last_start();
 private:
 	const char *current_string();
 	void ensure(size_t size);
@@ -40,7 +40,7 @@ private:
 	int unreadable;
 	long bytes_read;
 
-	long last_index;
+	FileOffset last_index;
 };
 
 #endif /* TOKENIZER_H_ */

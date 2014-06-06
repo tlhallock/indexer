@@ -61,8 +61,31 @@ bool IndexedFile::needs_reindex() const
 
 
 
+OccuranceIterator::OccuranceIterator() {}
+OccuranceIterator::~OccuranceIterator() {}
 
-OccuranceIterator::OccuranceIterator(FileId file, const char *key) :
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IndexedOccuranceIterator::IndexedOccuranceIterator(FileId file, const char *key) :
 	num(0),
 	count(0),
 	in(nullptr)
@@ -77,7 +100,7 @@ OccuranceIterator::OccuranceIterator(FileId file, const char *key) :
 
 	try
 	{
-		num = in->read_int();
+		num = in->read_long();
 	}
 	catch (UnexpectedInputException &ex)
 	{
@@ -85,15 +108,15 @@ OccuranceIterator::OccuranceIterator(FileId file, const char *key) :
 		num = 0;
 	}
 }
-OccuranceIterator::~OccuranceIterator() {}
+IndexedOccuranceIterator::~IndexedOccuranceIterator() {}
 
-bool OccuranceIterator::has_next() const
+bool IndexedOccuranceIterator::has_next() const
 {
 	return in != nullptr
 			&& count < num;
 }
 
-int OccuranceIterator::next()
+FileOffset IndexedOccuranceIterator::next()
 {
 	if (!has_next())
 	{
@@ -101,6 +124,92 @@ int OccuranceIterator::next()
 	}
 
 	++count;
-	return in->read_int();
+	return in->read_long();
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OriginalOccuranceIterator::OriginalOccuranceIterator(FileId file, const char* key) :
+		query(strdup(key)),
+		original(file),
+		done(false),
+		current_substring_offset(0)
+{
+	search();
+}
+
+OriginalOccuranceIterator::~OriginalOccuranceIterator()
+{
+	free((char *)query);
+}
+
+bool OriginalOccuranceIterator::has_next() const
+{
+	return !done;
+}
+
+FileOffset OriginalOccuranceIterator::next()
+{
+	if (done)
+	{
+		return -1;
+	}
+	FileOffset current = original.last_start() + current_substring_offset;
+	search();
+	return current;
+}
+
+void OriginalOccuranceIterator::search()
+{
+	for (;;)
+	{
+		const char *token = original.next();
+		if (token == nullptr)
+		{
+			done = true;
+			break;
+		}
+
+		const char *occ = strstr(token, query);
+		if (occ == nullptr)
+		{
+			continue;
+		}
+		current_substring_offset = occ - token;
+		break;
+	}
+}
+
+
+OccuranceIterator* create_occurance_iterator(FileId file, const char* key)
+{
+	if (get_settings().should_index_files())
+	{
+		try
+		{
+			return new IndexedOccuranceIterator(file, key);
+		}
+		catch (UnexpectedInputException &ref)
+		{
+			std::cout << "Unable to get indexed file " << file << " for " << key << std::endl;
+		}
+	}
+
+	return new OriginalOccuranceIterator(file, key);
+}

@@ -11,25 +11,53 @@
 #include "include/common.h"
 
 #include "utils/DataOutputStream.h"
+#include "index/Tokenizer.h"
 
 class IndexedFile;
+
 
 class OccuranceIterator
 {
 public:
-	OccuranceIterator(FileId file, const char *key);
-	OccuranceIterator(const IndexedFile &ifile, const char *key);
+	OccuranceIterator();
+	virtual ~OccuranceIterator();
 
-	~OccuranceIterator();
+	virtual bool has_next() const = 0;
+	virtual FileOffset next() = 0;
+};
+
+class IndexedOccuranceIterator : public OccuranceIterator
+{
+public:
+	IndexedOccuranceIterator(FileId file, const char *key);
+	~IndexedOccuranceIterator();
 
 	bool has_next() const;
-	int next();
+	FileOffset next();
 private:
 	int num;
 	int count;
 	std::unique_ptr<DataInputStream> in;
 };
 
+class OriginalOccuranceIterator : public OccuranceIterator
+{
+public:
+	OriginalOccuranceIterator(FileId file, const char *key);
+	~OriginalOccuranceIterator();
+
+	bool has_next() const;
+	FileOffset next();
+private:
+	void search();
+
+	const char *query;
+	Tokenizer original;
+	bool done;
+	int current_substring_offset;
+};
+
+OccuranceIterator *create_occurance_iterator(FileId file, const char *key);
 
 class IndexedFile
 {

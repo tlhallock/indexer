@@ -32,9 +32,19 @@
 #endif
 
 typedef int FileId;
+typedef unsigned long int FileOffset;
 
 char *concatenate(const char *str1, const char *str2);
 
 #include "app/Settings.h"
+
+
+
+
+
+
+
+
+
 
 #endif /* COMMON_H_ */

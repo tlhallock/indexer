@@ -39,9 +39,9 @@ void StringsList::add(const char* string)
 	words.push_back(string);
 }
 
-SuperStringIterator StringsList::iterator(const char* string)
+SuperStringIterator *StringsList::iterator(const char* string)
 {
-	return SuperStringIterator(words, string);
+	return new SuperStringIterator(words, string);
 }
 
 const char* SuperStringIterator::get_query()

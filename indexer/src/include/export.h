@@ -16,6 +16,7 @@
 #include "query/IndexedFile.h"
 #include "query/IndexEntry.h"
 #include "query/Query.h"
+#include "query/QueryBuilder.h"
 #include "query/SimpleQuery.h"
 #include "query/SuperStringQuery.h"
 

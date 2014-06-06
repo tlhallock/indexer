@@ -27,7 +27,7 @@ WordAccumulator::~WordAccumulator()
 	}
 }
 
-std::set<int> *WordAccumulator::get_index(const char *word)
+std::set<FileOffset> *WordAccumulator::get_index(const char *word)
 {
 	auto it = words.find(word);
 	if (it != words.end())
@@ -43,7 +43,7 @@ std::set<int> *WordAccumulator::get_index(const char *word)
 
 	int index = orders.size();
 
-	std::set<int> *ret_val = new std::set<int>;
+	std::set<FileOffset> *ret_val = new std::set<FileOffset>;
 	orders.push_back(ret_val);
 
 	words.insert(std::pair<std::string, int>(word, index));
@@ -51,7 +51,7 @@ std::set<int> *WordAccumulator::get_index(const char *word)
 	return ret_val;
 }
 
-void WordAccumulator::append(const char *token, int offset)
+void WordAccumulator::append(const char *token, FileOffset offset)
 {
 	get_index(token)->insert(offset);
 }
@@ -70,7 +70,7 @@ void WordAccumulator::save() const
 			continue;
 		}
 
-		std::set<int> &s = *orders.at(wit->second);
+		std::set<FileOffset> &s = *orders.at(wit->second);
 
 		out->write((int) s.size());
 

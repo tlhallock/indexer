@@ -39,6 +39,9 @@ public:
 	void write(const char *str);
 	void write(long int i);
 
+	void write(unsigned int i);
+	void write(unsigned long int i);
+
 	bool successful();
 
 	const char *get_path();

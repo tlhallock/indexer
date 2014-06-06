@@ -10,9 +10,9 @@
 #include "include/export.h"
 
 DataOutputStream::DataOutputStream(const char *path_) :
+		path(strdup(path_)),
 		file(try_to_open(path_, "w")),
-		success(file != nullptr),
-		path(strdup(path_))
+		success(file != nullptr)
 {
 }
 
@@ -25,7 +25,7 @@ DataOutputStream::~DataOutputStream()
 	free((char *) path);
 }
 
-void DataOutputStream::write(int i)
+void DataOutputStream::write(unsigned int i)
 {
 	if (get_settings().human_readable_indices())
 	{
@@ -40,7 +40,7 @@ void DataOutputStream::write(int i)
 	}
 }
 
-void DataOutputStream::write(long int i)
+void DataOutputStream::write(unsigned long int i)
 {
 	if (get_settings().human_readable_indices())
 	{
@@ -56,23 +56,6 @@ void DataOutputStream::write(long int i)
 		fputc((i >> 40) & 0xff, file);
 		fputc((i >> 48) & 0xff, file);
 		fputc((i >> 56) & 0xff, file);
-	}
-}
-
-void DataOutputStream::write(const char *str)
-{
-	if (get_settings().human_readable_indices())
-	{
-		fprintf(file, "%s\n", str);
-	}
-	else
-	{
-		int len = strlen(str);
-		write(len);
-		for (int i = 0; i < len; i++)
-		{
-			fputc(str[i], file);
-		}
 	}
 }
 
@@ -194,4 +177,55 @@ const char* DataInputStream::get_path() const
 const char* DataOutputStream::get_path()
 {
 	return path;
+}
+
+void DataOutputStream::write(int i)
+{
+	if (get_settings().human_readable_indices())
+	{
+		fprintf(file, "%d\n", i);
+	}
+	else
+	{
+		fputc((i >> 0) & 0xff, file);
+		fputc((i >> 8) & 0xff, file);
+		fputc((i >> 16) & 0xff, file);
+		fputc((i >> 24) & 0xff, file);
+	}
+}
+
+void DataOutputStream::write(const char* str)
+{
+	if (get_settings().human_readable_indices())
+	{
+		fprintf(file, "%s\n", str);
+	}
+	else
+	{
+		int len = strlen(str);
+		write(len);
+		for (int i = 0; i < len; i++)
+		{
+			fputc(str[i], file);
+		}
+	}
+}
+
+void DataOutputStream::write(long int i)
+{
+	if (get_settings().human_readable_indices())
+	{
+		fprintf(file, "%ld\n", i);
+	}
+	else
+	{
+		fputc((i >>  0) & 0xff, file);
+		fputc((i >>  8) & 0xff, file);
+		fputc((i >> 16) & 0xff, file);
+		fputc((i >> 24) & 0xff, file);
+		fputc((i >> 32) & 0xff, file);
+		fputc((i >> 40) & 0xff, file);
+		fputc((i >> 48) & 0xff, file);
+		fputc((i >> 56) & 0xff, file);
+	}
 }

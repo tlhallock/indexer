@@ -9,7 +9,7 @@
 
 #include "include/export.h"
 
-static void encountered_token(const char *token, int offset, FileId file, WordAccumulator &accum)
+static void encountered_token(const char *token, FileOffset offset, FileId file, WordAccumulator &accum)
 {
 	get_index_entry_cache().get_index_entry(token).add_file(file);
 	if (get_settings().should_index_files())
@@ -40,7 +40,7 @@ static void encountered_token(const char *token, int offset, FileId file, WordAc
 			continue;
 		}
 
-		get_exp_index().add(token);
+		get_exp_index().add(substring);
 	}
 }
 

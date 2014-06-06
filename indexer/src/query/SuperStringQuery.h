@@ -20,7 +20,7 @@
 class SuperStringQuery : public Query
 {
 public:
-	SuperStringQuery(std::unique_ptr<StringIterator> && iterator, const char *query);
+	SuperStringQuery(StringIterator *iterator, const char *query);
 	virtual ~SuperStringQuery();
 
 	bool has_next() const;

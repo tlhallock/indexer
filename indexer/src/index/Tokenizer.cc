@@ -166,7 +166,7 @@ void Tokenizer::ensure(size_t size)
 	buff = (char *) realloc(buff, buff_size);
 }
 
-long Tokenizer::last_start()
+FileOffset Tokenizer::last_start()
 {
 	return last_index;
 }

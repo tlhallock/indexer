@@ -18,16 +18,16 @@ public:
 	WordAccumulator(IndexedFile *f);
 	virtual ~WordAccumulator();
 
-	void append(const char *token, int offset);
+	void append(const char *token, FileOffset offset);
 	void save() const;
 private:
-	std::set<int> *get_index(const char *word);
+	std::set<FileOffset> *get_index(const char *word);
 
 	IndexedFile *file;
 	time_t read_time;
 
 	boost::unordered_map<std::string, int> words;
-	std::vector<std::set<int>*> orders;
+	std::vector<std::set<FileOffset>*> orders;
 };
 
 #endif /* WORDACCUMULATOR_H_ */

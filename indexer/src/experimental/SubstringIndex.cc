@@ -48,6 +48,14 @@ void StringListIterator::search()
 	}
 }
 
+const char *StringListIterator::next()
+{
+	// could get destroyed...
+	const char *ret = it->c_str();
+	search();
+	return ret;
+}
+
 void SubstringIndex::add(const char* word)
 {
 //	int len = strlen(word);
