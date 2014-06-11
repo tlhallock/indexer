@@ -223,3 +223,20 @@ void remove_super_string_index(const char* key)
 {
 	// everything gets removed anyway...
 }
+
+std::unique_ptr<DataInputStream> read_substring_index(const char* key)
+{
+	return single_hash(get_settings().get_substrings_base_dir(), key);
+}
+
+std::unique_ptr<DataOutputStream> write_substring_index(const char* key)
+{
+	std::unique_ptr<DataInputStream> in = read_substring_index(key);
+	if (in.get() == nullptr)
+	{
+		return nullptr;
+	}
+	std::unique_ptr<DataOutputStream> out(new DataOutputStream(in->get_path()));
+	out->write(key);
+	return out;
+}

@@ -7,7 +7,13 @@
 
 #include <parser/regs/Exponent.h>
 
-Exponent::Exponent(Regex *child_) : child(child_) {}
+Exponent::Exponent(Regex *child_) :
+		child(child_),
+		max(0),
+		min(0)
+{
+
+}
 Exponent::~Exponent()
 {
 	delete child;

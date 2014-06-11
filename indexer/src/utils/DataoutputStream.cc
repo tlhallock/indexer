@@ -229,3 +229,8 @@ void DataOutputStream::write(long int i)
 		fputc((i >> 56) & 0xff, file);
 	}
 }
+
+void DataOutputStream::write(const std::string& string)
+{
+	write(string.c_str());
+}

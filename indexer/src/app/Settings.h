@@ -18,6 +18,7 @@ public:
 	const char *get_words_base_dir() const;
 	const char *get_files_base_dir() const;
 	const char *get_super_string_base_dir() const;
+	const char *get_substrings_base_dir() const;
 
 	const char *get_files_file() const;
 
@@ -34,9 +35,10 @@ public:
 
 private:
 	const char *home_folder;
-	const char *words_base_dir;
-	const char *files_base_dir;
-	const char *super_strings_base_dir;
+	const char *words_base_dir; // indices of words (including all substrings) referencing files
+	const char *files_base_dir; // indices of files
+	const char *super_strings_base_dir; // indices of words (not including substrings) referencing files
+	const char *substrings_base_dir; // indices of substrings with maximum size referencing super_stirngs_base_dir;
 	const char *files_file;
 };
 

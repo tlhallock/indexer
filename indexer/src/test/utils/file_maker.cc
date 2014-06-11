@@ -1,5 +1,7 @@
 
-#include "export.h"
+#include "test/utils/file_maker.h"
+
+#include "include/export.h"
 
 static bool contains(const char *string, std::set<std::string> *nosubs)
 {

@@ -23,25 +23,6 @@ static void encountered_token(const char *token, FileOffset offset, FileId file,
 		return;
 	}
 
-	// should pass in range here...
-	SubstringIterator subs(token);
-	while (subs.has_next())
-	{
-		const char *substring = subs.next();
-		int len = subs.offset();
-
-		if (len < get_settings().get_minimum_substring_index())
-		{
-			continue;
-		}
-
-		if (len > get_settings().get_maximum_substring_index())
-		{
-			continue;
-		}
-
-		get_exp_index().add(substring);
-	}
 }
 
 void index(const char *path)

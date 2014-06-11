@@ -13,3 +13,9 @@ Optional::~Optional()
 	delete regex;
 }
 
+NFA* Optional::create() const
+{
+	NFA *child = regex->create();
+	child->get_start()->add(EPSILON, child->get_accepting());
+	return child;
+}

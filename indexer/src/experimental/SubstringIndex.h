@@ -28,20 +28,54 @@ private:
 	std::set<std::string>::iterator it;
 };
 
+class SuperStringList
+{
+public:
+	SuperStringList(const std::string &key);
+	~SuperStringList();
+
+	int get_size() const;
+	bool cached() const;
+
+	void add(const std::string &superstring);
+	void remove(const std::string &superstring);
+
+	void load();
+	void save() const;
+
+	StringListIterator *iterator();
+
+	size_t get_memory_usage() const;
+private:
+	mutable int size;
+	std::set<std::string> *superstrings;
+
+	size_t memory_usage;
+	int num_accessed;
+
+	std::string key;
+};
+
+
+
 class SubstringIndex
 {
 public:
-	SubstringIndex(int n);
+	SubstringIndex();
 	~SubstringIndex();
 
 	void add(const char *word);
-	StringListIterator *iterator(const char *word) const;
+	StringListIterator *iterator(const char *word);
+
+	void save() const;
+	void read();
 
 	void print() const;
 	int count() const;
 private:
-	int n;
-	boost::unordered_map<std::string, std::set<std::string>> cache;
+	std::shared_ptr<SuperStringList> get(const char *key);
+
+	boost::unordered_map<std::string, std::shared_ptr<SuperStringList>> cache;
 };
 
 SubstringIndex &get_exp_index();

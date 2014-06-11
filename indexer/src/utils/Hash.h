@@ -28,6 +28,9 @@ std::unique_ptr<DataInputStream> read_super_string_index(const char *key);
 std::unique_ptr<DataOutputStream> write_super_string_index(const char *key);
 void remove_super_string_index(const char *key);
 
+std::unique_ptr<DataInputStream> read_substring_index(const char *key);
+std::unique_ptr<DataOutputStream> write_substring_index(const char *key);
+
 class Hash
 {
 public:

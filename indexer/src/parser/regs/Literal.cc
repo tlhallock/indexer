@@ -13,8 +13,6 @@ Literal::~Literal() {}
 NFA* Literal::create() const
 {
 	NFA *fsm = new NFA();
-
 	fsm->get_start()->add(c, fsm->get_accepting());
-
 	return fsm;
 }

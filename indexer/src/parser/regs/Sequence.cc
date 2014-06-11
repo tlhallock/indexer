@@ -24,7 +24,7 @@ NFA* Sequence::create() const
 	auto end = regs.end();
 	for (auto it = regs.begin(); it != end; ++it)
 	{
-		NFA *child_nfa = it->create();
+		NFA *child_nfa = (*it)->create();
 
 		current->add(EPSILON, child_nfa->get_start());
 		current = child_nfa->get_accepting();

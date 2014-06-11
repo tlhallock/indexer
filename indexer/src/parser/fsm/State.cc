@@ -26,12 +26,16 @@ void State::set_accepting(bool accepting_)
 	accepting = accepting_;
 }
 
+#define stat_ptr int
+
 std::set<state_ptr>& State::get_states(CHARACTER transition)
 {
 	std::map<CHARACTER, std::set<state_ptr>>::iterator it = transitions.find(transition);
 	if (it == transitions.end())
 	{
-		it = transitions.insert(std::pair<CHARACTER, std::set<state_ptr>>(transition, std::set<state_ptr>));
+		std::set<state_ptr> *s = new std::set<state_ptr>;
+		return *s;
+//		return nullptr; //std::set<state_ptr>;
 	}
-	return it->second();
+	return it->second;
 }

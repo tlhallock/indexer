@@ -10,6 +10,8 @@
 
 #include <parser/regs/Regex.h>
 
+#include <vector>
+
 class Sequence: public Regex
 {
 public:

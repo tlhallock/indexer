@@ -42,6 +42,8 @@ public:
 	void write(unsigned int i);
 	void write(unsigned long int i);
 
+	void write(const std::string &string);
+
 	bool successful();
 
 	const char *get_path();

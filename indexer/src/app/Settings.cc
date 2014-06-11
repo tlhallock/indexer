@@ -31,6 +31,7 @@ Settings::Settings()
 	files_base_dir = concatenate(home_folder, "/files.d");
 	files_file = concatenate(home_folder, "/files.txt");
 	super_strings_base_dir = concatenate(home_folder, "/superstrings.d");
+	substrings_base_dir = concatenate(home_folder, "/substrings.d");
 }
 
 Settings::~Settings()
@@ -39,6 +40,7 @@ Settings::~Settings()
 	free((char *) files_base_dir);
 	free((char *) files_file);
 	free((char *) super_strings_base_dir);
+	free((char *) substrings_base_dir);
 }
 
 const char* Settings::get_base_dir() const
@@ -59,6 +61,11 @@ const char* Settings::get_files_base_dir() const
 const char* Settings::get_files_file() const
 {
 	return files_file;
+}
+
+const char* Settings::get_substrings_base_dir() const
+{
+	return substrings_base_dir;
 }
 
 const char* Settings::get_delims() const
@@ -85,7 +92,6 @@ bool Settings::human_readable_indices() const
 {
 	return true;
 }
-
 
 int Settings::get_maximum_substring_index() const
 {

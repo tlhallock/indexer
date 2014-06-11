@@ -10,6 +10,8 @@
 
 #include "parser/regs/Regex.h"
 
+#include <vector>
+
 class Or : public Regex
 {
 public:
