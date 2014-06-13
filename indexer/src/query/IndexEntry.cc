@@ -12,7 +12,7 @@
 IndexEntryIterater::IndexEntryIterater(const char *word) :
 		num_left(0), in(read_word_index(word))
 {
-	if (!in->successful())
+	if (in == nullptr || !in->successful())
 	{
 		in = nullptr;
 		return;

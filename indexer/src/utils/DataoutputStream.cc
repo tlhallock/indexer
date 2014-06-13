@@ -84,6 +84,11 @@ DataInputStream::~DataInputStream()
 
 int DataInputStream::read_int() throw (UnexpectedInputException)
 {
+	if (!success)
+	{
+		throw new UnexpectedInputException("No file to read!");
+	}
+
 	if (get_settings().human_readable_indices())
 	{
 		int ret;
@@ -109,6 +114,11 @@ int DataInputStream::read_int() throw (UnexpectedInputException)
 
 long int DataInputStream::read_long() throw (UnexpectedInputException)
 {
+	if (!success)
+	{
+		throw new UnexpectedInputException("No file to read!");
+	}
+
 	long int ret_val = 0;
 	if (get_settings().human_readable_indices())
 	{
@@ -134,6 +144,11 @@ long int DataInputStream::read_long() throw (UnexpectedInputException)
 
 std::unique_ptr<std::string> DataInputStream::read_str() throw (UnexpectedInputException)
 {
+	if (!success)
+	{
+		throw new UnexpectedInputException("No file to read!");
+	}
+
 	char *ret_val;
 
 	if (get_settings().human_readable_indices())

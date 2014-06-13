@@ -54,7 +54,7 @@ void Hash::print(char *out, int collision_num)
 }
 
 
-static std::unique_ptr<DataInputStream> single_hash(const char *dir, const char *key)
+static std::unique_ptr<DataInputStream> single_hash(const char *dir, const char *key, bool returnNonExists)
 {
 	if (dir == nullptr || !*dir || key == nullptr || !*key)
 	{
@@ -79,7 +79,14 @@ static std::unique_ptr<DataInputStream> single_hash(const char *dir, const char 
 		std::unique_ptr<DataInputStream> in(new DataInputStream(out));
 		if (!in->successful())
 		{
-			return in;
+			if (returnNonExists)
+			{
+				return in;
+			}
+			else
+			{
+				return std::unique_ptr<DataInputStream>(nullptr);
+			}
 		}
 
 		if (in->read_str()->compare(key) != 0)
@@ -96,7 +103,7 @@ static std::unique_ptr<DataInputStream> single_hash(const char *dir, const char 
 }
 
 
-std::unique_ptr<DataInputStream> read_file_index(const char *original_file_name, const char *key)
+std::unique_ptr<DataInputStream> read_file_index(const char *original_file_name, const char *key, bool returnNonExists)
 {
 	if (original_file_name == nullptr || !*original_file_name || (key != nullptr && !*key))
 	{
@@ -139,7 +146,14 @@ std::unique_ptr<DataInputStream> read_file_index(const char *original_file_name,
 		std::unique_ptr<DataInputStream> in(new DataInputStream(out));
 		if (!in->successful())
 		{
-			return in;
+			if (returnNonExists)
+			{
+				return in;
+			}
+			else
+			{
+				return std::unique_ptr<DataInputStream>(nullptr);
+			}
 		}
 
 		if (in->read_str()->compare(original_file_name) != 0)
@@ -162,7 +176,7 @@ std::unique_ptr<DataInputStream> read_file_index(const char *original_file_name,
 
 std::unique_ptr<DataOutputStream> write_file_index(const char *original_file_name, const char *key)
 {
-	std::unique_ptr<DataInputStream> in = read_file_index(original_file_name, key);
+	std::unique_ptr<DataInputStream> in = read_file_index(original_file_name, key, true);
 	if (in.get() == nullptr)
 	{
 		return nullptr;
@@ -176,13 +190,13 @@ std::unique_ptr<DataOutputStream> write_file_index(const char *original_file_nam
 	return out;
 }
 
-std::unique_ptr<DataInputStream> read_word_index(const char *key)
+std::unique_ptr<DataInputStream> read_word_index(const char *key, bool returnNonExists)
 {
-	return single_hash(get_settings().get_words_base_dir(), key);
+	return single_hash(get_settings().get_words_base_dir(), key, returnNonExists);
 }
 std::unique_ptr<DataOutputStream> write_word_index(const char *key)
 {
-	std::unique_ptr<DataInputStream> in = read_word_index(key);
+	std::unique_ptr<DataInputStream> in = read_word_index(key, true);
 	if (in.get() == nullptr)
 	{
 		return nullptr;
@@ -192,14 +206,14 @@ std::unique_ptr<DataOutputStream> write_word_index(const char *key)
 	return out;
 }
 
-std::unique_ptr<DataInputStream> read_super_string_index(const char *key)
+std::unique_ptr<DataInputStream> read_super_string_index(const char *key, bool returnNonExists)
 {
-	return single_hash(get_settings().get_super_string_base_dir(), key);
+	return single_hash(get_settings().get_super_string_base_dir(), key, returnNonExists);
 }
 
 std::unique_ptr<DataOutputStream> write_super_string_index(const char *key)
 {
-	std::unique_ptr<DataInputStream> in = read_super_string_index(key);
+	std::unique_ptr<DataInputStream> in = read_super_string_index(key, true);
 	if (in.get() == nullptr)
 	{
 		return nullptr;
@@ -224,14 +238,14 @@ void remove_super_string_index(const char* key)
 	// everything gets removed anyway...
 }
 
-std::unique_ptr<DataInputStream> read_substring_index(const char* key)
+std::unique_ptr<DataInputStream> read_substring_index(const char* key, bool returnNonExists)
 {
-	return single_hash(get_settings().get_substrings_base_dir(), key);
+	return single_hash(get_settings().get_substrings_base_dir(), key, returnNonExists);
 }
 
 std::unique_ptr<DataOutputStream> write_substring_index(const char* key)
 {
-	std::unique_ptr<DataInputStream> in = read_substring_index(key);
+	std::unique_ptr<DataInputStream> in = read_substring_index(key, true);
 	if (in.get() == nullptr)
 	{
 		return nullptr;

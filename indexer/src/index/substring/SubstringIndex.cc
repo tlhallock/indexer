@@ -78,8 +78,8 @@ const char *StringListIterator::next()
 
 void SubstringIndex::add(const char* word)
 {
-	// should pass in range here...
-	SubstringIterator subs(word, get_settings().get_minimum_substring_index(), get_settings().get_maximum_substring_index());
+	SubstringIterator subs(word, get_settings().get_minimum_substring_index(),
+			get_settings().get_maximum_substring_index());
 	while (subs.has_next())
 	{
 		const char *substring = subs.next();
@@ -236,11 +236,7 @@ bool SuperStringList::cached() const
 
 void SuperStringList::add(const std::string& superstring)
 {
-	if (superstrings == nullptr)
-	{
-		puts("Error 6310605176438756134");
-		exit(1);
-	}
+	load();
 
 	auto it = superstrings->find(superstring);
 	if (it != superstrings->end())
@@ -254,11 +250,8 @@ void SuperStringList::add(const std::string& superstring)
 
 void SuperStringList::remove(const std::string& superstring)
 {
-	if (superstrings == nullptr)
-	{
-		puts("Error 0759287509287409875");
-		exit(1);
-	}
+	load();
+
 	auto it = superstrings->find(superstring);
 	if (it == superstrings->end())
 	{
