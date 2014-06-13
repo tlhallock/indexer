@@ -30,10 +30,10 @@ Query* QueryBuilder::build_query(const char* string)
 
 	if (len > get_settings().get_maximum_substring_index())
 	{
-		return new SuperStringQuery(get_exp_index().iterator(string), string);
+		return new SuperStringQuery(get_substrings_index().iterator(string), string);
 	}
 
-	return new SuperStringQuery(get_exp_index().iterator(string), string);
+	return new SuperStringQuery(get_substrings_index().iterator(string), string);
 //	return new FileOffsetListQuery(string);
 }
 

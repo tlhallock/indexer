@@ -80,6 +80,11 @@ double Settings::get_max_unreadable_percentage() const
 
 bool Settings::should_index_substrings() const
 {
+	return true;
+}
+
+bool Settings::should_index_all_substrings() const
+{
 	return false;
 }
 

@@ -28,6 +28,18 @@ private:
 	std::set<std::string>::iterator it;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
 class SuperStringList
 {
 public:
@@ -58,6 +70,12 @@ private:
 
 
 
+
+
+
+
+
+
 class SubstringIndex
 {
 public:
@@ -68,9 +86,7 @@ public:
 	StringListIterator *iterator(const char *word);
 
 	void save() const;
-	void read();
 
-	void print() const;
 	int count() const;
 private:
 	std::shared_ptr<SuperStringList> get(const char *key);
@@ -78,6 +94,6 @@ private:
 	boost::unordered_map<std::string, std::shared_ptr<SuperStringList>> cache;
 };
 
-SubstringIndex &get_exp_index();
+SubstringIndex &get_substrings_index();
 
 #endif /* SUBSTRINGINDEX_H_ */

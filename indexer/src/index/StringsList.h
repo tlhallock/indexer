@@ -46,6 +46,8 @@ public:
 	SuperStringIterator *iterator(const char *string);
 
 	int count() const;
+
+	void clear();
 private:
 	std::vector<std::string> words;
 };

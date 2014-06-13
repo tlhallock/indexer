@@ -5,7 +5,7 @@
  *      Author: thallock
  */
 
-#include "experimental/SubstringIndex.h"
+#include "index/substring/SubstringIndex.h"
 #include "index/SubstringIterator.h"
 #include "utils/Hash.h"
 
@@ -16,6 +16,7 @@ SubstringIndex::SubstringIndex() :
 
 SubstringIndex::~SubstringIndex()
 {
+	save();
 }
 
 
@@ -57,14 +58,32 @@ const char *StringListIterator::next()
 	return ret;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void SubstringIndex::add(const char* word)
 {
 	// should pass in range here...
-	SubstringIterator subs(word);
+	SubstringIterator subs(word, get_settings().get_minimum_substring_index(), get_settings().get_maximum_substring_index());
 	while (subs.has_next())
 	{
 		const char *substring = subs.next();
-		int len = subs.offset();
+		int len = strlen(substring);//subs.offset();
 
 		if (len < get_settings().get_minimum_substring_index())
 		{
@@ -76,7 +95,7 @@ void SubstringIndex::add(const char* word)
 			continue;
 		}
 
-		get(substring)->add(word);
+		get(substring)->add(substring);
 	}
 }
 
@@ -107,33 +126,7 @@ StringListIterator* SubstringIndex::iterator(const char* full_word)
 	return new StringListIterator(full_word, std::set<std::string>{});
 }
 
-
-void SubstringIndex::print() const
-{
-	for (int i = 0; i < 80; i++)
-	{
-		std::cout << "#";
-	}
-	std::cout << std::endl;
-	auto end = cache.end();
-	for (auto it = cache.begin(); it != end; ++it)
-	{
-//		std::cout << it->first << " (" << it->second->get_size() << ") :\n\t";
-//		auto iend = it->second.end();
-//		for (auto iit = it->second.begin(); iit != iend; ++iit)
-//		{
-//			std::cout << "'" << *iit << "' ";
-//		}
-		std::cout << std::endl;
-	}
-	for (int i = 0; i < 80; i++)
-	{
-		std::cout << "#";
-	}
-	std::cout << std::endl;
-}
-
-SubstringIndex& get_exp_index()
+SubstringIndex& get_substrings_index()
 {
 	static SubstringIndex *index;
 	if (index == nullptr)
@@ -156,6 +149,59 @@ int SubstringIndex::count() const
 
 	return count;
 }
+
+void SubstringIndex::save() const
+{
+	auto end = cache.end();
+	for (auto it = cache.begin(); it != end; ++it)
+	{
+		it->second->save();
+	}
+}
+
+std::shared_ptr<SuperStringList> SubstringIndex::get(const char* key)
+{
+	auto it = cache.find(key);
+	if (it != cache.end())
+	{
+		return it->second;
+	}
+
+	std::shared_ptr<SuperStringList> ptr(new SuperStringList(key));
+	cache.insert(std::pair<std::string, std::shared_ptr<SuperStringList>>(key, ptr));
+	return ptr;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 SuperStringList::SuperStringList(const std::string &key_) :
 		size(0),
@@ -279,25 +325,4 @@ StringListIterator* SuperStringList::iterator()
 size_t SuperStringList::get_memory_usage() const
 {
 	return memory_usage;
-}
-
-void SubstringIndex::save() const
-{
-}
-
-void SubstringIndex::read()
-{
-}
-
-std::shared_ptr<SuperStringList> SubstringIndex::get(const char* key)
-{
-	auto it = cache.find(key);
-	if (it != cache.end())
-	{
-		return it->second;
-	}
-
-	std::shared_ptr<SuperStringList> ptr(new SuperStringList(key));
-	cache.insert(std::pair<std::string, std::shared_ptr<SuperStringList>>(key, ptr));
-	return ptr;
 }

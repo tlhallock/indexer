@@ -27,6 +27,8 @@ public:
 
 	bool write() const;
 	bool read();
+
+	void clear();
 private:
 	boost::unordered_map<std::string, FileId> by_path;
 	boost::unordered_map<int, std::string> by_id;

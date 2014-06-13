@@ -27,6 +27,7 @@ public:
 
 	bool should_index_substrings() const;
 	bool should_index_files() const;
+	bool should_index_all_substrings() const;
 
 	bool human_readable_indices() const;
 

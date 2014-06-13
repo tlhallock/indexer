@@ -14,23 +14,30 @@ class SubstringIterator : public StringIterator
 {
 public:
 	SubstringIterator(const char *str_);
+	SubstringIterator(const char *str_, int min, int max);
 	~SubstringIterator();
 
 	bool has_next() const;
 	const char *next();
 
-	int offset();
+	int next_offset();
 	const char *current();
 private:
-	const char *create_current();
+	void search();
+	void create_current();
 
 	int len;
 
 	char *str;
-	char *current_start;
-	char *current_end;
-
 	char *cur_value;
+
+	int start;
+	int stop;
+
+	int min;
+	int max;
+
+	bool done;
 };
 
 #endif /* SUBSTRINGITERATOR_H_ */

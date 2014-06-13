@@ -77,3 +77,8 @@ int StringsList::count() const
 {
 	return words.size();
 }
+
+void StringsList::clear()
+{
+	words.clear();
+}

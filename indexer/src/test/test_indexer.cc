@@ -6,11 +6,12 @@
  */
 
 #include "include/export.h"
+#include "app/Application.h"
 
 #if 1
 int main(int argc, char **argv)
 {
-	delete_file(get_settings().get_base_dir());
+	get_application().reset();
 
 	const char *str = "foo";
 
@@ -18,8 +19,6 @@ int main(int argc, char **argv)
 //	index_all("/media/thallock/0e53aea8-0c7a-4c02-9cba-f283a18835ba/work/cleanup/cef.old/chromium/src");
 
 	get_file_mapper().write();
-
-	get_exp_index().print();
 
 	std::cout << "Number of files: " << get_file_mapper().get_num_files() << "\n";
 	std::cout << "Files containing " << str << ":\n";
@@ -30,8 +29,10 @@ int main(int argc, char **argv)
 	double time = q->run();
 	std::cout << "Took " << time << "ms\n";
 
-
 	delete q;
+
+
+	get_substrings_index().save();
 
 	return 0;
 }
@@ -158,5 +159,12 @@ test_result test_no_files()
 {
 	return inconclusive;
 }
+
+
+
+
+
+// test bad files/non existant files...
+
 
 #endif

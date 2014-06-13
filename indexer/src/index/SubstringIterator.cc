@@ -10,13 +10,23 @@
 #include "include/export.h"
 
 SubstringIterator::SubstringIterator(const char* str_) :
-	len(strlen(str_)),
-	str(strdup(str_)),
-	current_start(str),
-	current_end(str + len),
-	cur_value((char *) malloc (sizeof (*cur_value) * (len + 1)))
+		SubstringIterator(str_, 1, INT_MAX) {}
+
+SubstringIterator::SubstringIterator(const char* str_, int min_, int max_) :
+			len(strlen(str_)),
+			str(strdup(str_)),
+			cur_value((char *) malloc (sizeof (*cur_value) * (len + 1))),
+			start(0),
+			stop(start + min_),
+			min(min_),
+			max(max_)
 {
-	create_current();
+	if (min <= 0)
+	{
+		min = 1;
+		stop = start + min;
+	}
+	done = len == 0 || max < 0 || min > max;
 }
 
 SubstringIterator::~SubstringIterator()
@@ -27,53 +37,54 @@ SubstringIterator::~SubstringIterator()
 
 bool SubstringIterator::has_next() const
 {
-	return current_end != current_start;
+	return !done;
+}
+
+void SubstringIterator::search()
+{
+	do
+	{
+		if (stop >= len || stop - start >= max)
+		{
+			if (start >= len - min)
+			{
+				done = true;
+				return; // can't continue
+			}
+			else
+			{
+				start++;
+			}
+			stop = start + min;
+		}
+		else
+		{
+			stop++;
+		}
+	} while (start == stop);
 }
 
 const char* SubstringIterator::next()
 {
-	if (current_end == current_start)
-	{
-		return nullptr;
-	}
-
-	current_end--;
-	if (current_end != current_start)
-	{
-		return create_current();
-	}
-
-	current_start++;
-	current_end = str + len;
-
-	if (current_end == current_start)
-	{
-		return nullptr;
-	}
-
-	return create_current();
-}
-
-
-const char *SubstringIterator::create_current()
-{
-	char *dest = cur_value;
-	char *src = current_start;
-
-
-	while (src != current_end)
-	{
-		*(dest++) = *(src++);
-	}
-
-	*dest = '\0';
-
+	create_current();
+	search();
 	return cur_value;
 }
 
-int SubstringIterator::offset()
+
+void SubstringIterator::create_current()
 {
-	return current_start - str;
+	int j = 0;
+	for (int i = start; i < stop; i++)
+	{
+		cur_value[j++] = str[i];
+	}
+	cur_value[j] = '\0';
+}
+
+int SubstringIterator::next_offset()
+{
+	return start;
 }
 
 const char* SubstringIterator::current()

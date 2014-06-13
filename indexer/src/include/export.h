@@ -4,7 +4,7 @@
 
 #include "include/common.h"
 
-#include "experimental/SubstringIndex.h"
+#include "index/substring/SubstringIndex.h"
 
 #include "index/FileManager.h"
 #include "index/Indexer.h"

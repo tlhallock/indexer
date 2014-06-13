@@ -12,6 +12,7 @@
 static void encountered_token(const char *token, FileOffset offset, FileId file, WordAccumulator &accum)
 {
 	get_index_entry_cache().get_index_entry(token).add_file(file);
+
 	if (get_settings().should_index_files())
 	{
 		accum.append(token, offset);
@@ -23,6 +24,17 @@ static void encountered_token(const char *token, FileOffset offset, FileId file,
 		return;
 	}
 
+	if (!get_settings().should_index_all_substrings())
+	{
+		get_substrings_index().add(token);
+		return;
+	}
+
+	SubstringIterator subs(token);
+	while (subs.has_next())
+	{
+		get_index_entry_cache().get_index_entry(subs.next()).add_file(file);
+	}
 }
 
 void index(const char *path)
@@ -58,7 +70,7 @@ void index(const char *path)
 
 	std::cout << "Number of entries in the IndexEntryCache: " << get_index_entry_cache().get_size() << std::endl;
 	std::cout << "Number of entries in the String List: " << get_strings_list().count() << std::endl;
-	std::cout << "Number of entries in the exp index: " << get_exp_index().count() << std::endl;
+	std::cout << "Number of entries in the exp index: " << get_substrings_index().count() << std::endl;
 
 	static int count;
 	static FILE *plot;
@@ -68,7 +80,7 @@ void index(const char *path)
 	}
 	if (!(count++ % 100))
 	{
-		fprintf(plot, "%d %d; ...\n", count++, get_exp_index().count());
+		fprintf(plot, "%d %d; ...\n", count++, get_substrings_index().count());
 		fflush(plot);
 	}
 

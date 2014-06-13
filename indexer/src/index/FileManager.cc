@@ -143,3 +143,9 @@ bool FileMapper::read()
 
 	return true;
 }
+
+void FileMapper::clear()
+{
+	by_path.clear();
+	by_id.clear();
+}
