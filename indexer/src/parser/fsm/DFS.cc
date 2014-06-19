@@ -69,12 +69,16 @@ void something()
 		{
 			indices[i] = id++;
 		}
+		else
+		{
+			indices[i] = -1;
+		}
 	}
 }
 
 int get_index(CHARACTER c)
 {
-	switch(c)
+	switch (c)
 	{
 	// should just have an array of indices.
 		case 'a' : return  0;
