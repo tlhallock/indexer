@@ -30,7 +30,7 @@ public:
 	void replace(dfs_state *other);
 
 	std::set<state_ptr> states;
-	dfs_state *next[256];
+	dfs_state *next[kNumChars];
 	std::set<dfs_state *> references;
 	int id;
 };

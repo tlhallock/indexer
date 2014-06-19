@@ -7,7 +7,7 @@
 
 dfs_state::dfs_state()
 {
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < kNumChars; i++)
 	{
 		next[i] = nullptr;
 	}
@@ -96,7 +96,7 @@ void dfs_state::replace(dfs_state *other)
 	for (auto it = references.begin(); it != references.end(); ++it)
 	{
 		dfs_state *prev = *it;
-		for (int i = 0; i < 256; i++)
+		for (int i = 0; i < kNumChars; i++)
 		{
 			if (prev->next[i] == this)
 			{
@@ -176,7 +176,7 @@ DFS *create_dfs(NFA *nfa)
 		next->set_id(discovered.size());
 		discovered.push_back(next);
 
-		for (int i = 0; i < 256; i++)
+		for (int i = 0; i < kNumChars; i++)
 		{
 			horizon.push_back(next->transition(i));
 		}
@@ -190,7 +190,7 @@ DFS *create_dfs(NFA *nfa)
 
 	for (int id = 0; id < size; id++)
 	{
-		for (int i = 0; i < 256; i++)
+		for (int i = 0; i < kNumChars; i++)
 		{
 			delta[i][id] = discovered.at(id)->next[i]->get_id();
 		}

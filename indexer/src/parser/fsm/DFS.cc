@@ -41,8 +41,8 @@ void DFS::next(char c)
 
 int** create_delta(const int num_states)
 {
-	int **ret_val = (int **) malloc (sizeof(*ret_val) * 256);
-	for (int i=0;i<256;i++)
+	int **ret_val = (int **) malloc (sizeof(*ret_val) * kNumChars);
+	for (int i=0;i<kNumChars;i++)
 	{
 		ret_val[i] = (int *) malloc (sizeof(*ret_val[i]) * num_states);
 		for (int j=0;j<num_states;j++)
