@@ -30,8 +30,9 @@ public:
 
 	bool is_accepting() const;
 	void set_accepting(bool accepting);
-private:
+
 	std::set<state_ptr> &get_states(CHARACTER transition);
+private:
 
 	bool accepting;
 	std::map<CHARACTER, std::set<state_ptr>> transitions;

@@ -14,13 +14,14 @@
  * productions to correctly match else's with if's
  * beginnings of a separate compilation facility
  */
+ 
+ #include "Lexer.h"
 
 %}
 
 %token OPAREN CPAREN LCURLY RCURLY LSQUARE RSQUARE
 %token DOT COMMA MINUS PIPE FSLASH STAR PLUS CARRET QUESTION
 %token CHAR DELIM DIGIT ESCAPE
-%token WHITESPACE CAP LOW ALPHA_NUM NUM
 
 %%
 file : regex;
@@ -46,16 +47,16 @@ sequence : quantifier { $$ = $1; };
 quantifier : base { $$ = $1; };
 quantifier : base STAR
 {
-	Repitition *rep = new Repition();
+	Repitition *rep = new Repitition();
 	rep->add($1);
 	$$ = rep;
 };
-quantifier : base PLUS;
+quantifier : base PLUS
 {
 	Sequence *seq = new Sequence();
 	seq->add($1);
 	
-	Repitition *rep = new Repition();
+	Repitition *rep = new Repitition();
 	rep->add($1);
 	seq->add(rep);
 	
@@ -67,7 +68,7 @@ quantifier : base QUESTION
 };
 quantifier : base LCURLY number RCURLY
 {
-	Sequnce *seq = new Sequnce();
+	Sequence *seq = new Sequence();
 		
 	$$ = seq;
 };
@@ -83,7 +84,7 @@ number : DIGIT;
 number : DIGIT number;
 
 /* for now: */
-list : CARROT list2;
+list : CARRET list2;
 list : list2;
 
 list2 : CHAR list2;
