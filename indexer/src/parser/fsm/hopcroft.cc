@@ -79,6 +79,27 @@ partition *mod(partition *X, partition *Y)
 }
 
 
+static bool parts_equal(partition *p1, partition *p2)
+{
+	if (p1->size() != p2->size())
+	{
+		return false;
+	}
+
+	auto end = p1->end();
+
+	auto oit = p2->begin();
+	for (auto it = p1->begin(); it != end; ++it)
+	{
+		if (*it != *oit++)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 #if 0
 static bool is_Y(partition *X, partition *Y)
 {
@@ -110,7 +131,7 @@ static bool is_Y(partition *X, partition *Y)
 }
 #endif
 
-DFS *hapcroft(DFS *dfs)
+DFS *hopcroft(DFS *dfs)
 {
 	// Algorithm taken from en.wikipedia.org/wiki/DFA_minimization
 	int num_states = dfs->num_states();
@@ -134,12 +155,12 @@ DFS *hapcroft(DFS *dfs)
 		for (int c = 0; c < kNumChars; c++)
 		{
 			// let X be the set of states for which a transition on c leads to a state in A
-			partition *X = new partition;
+			partition X;
 			for (int i = 0; i < num_states; i++)
 			{
 				if (A->find(dfs->get_delta()[c][i]) != A->end())
 				{
-					X->insert(i);
+					X.insert(i);
 				}
 			}
 
@@ -148,15 +169,15 @@ DFS *hapcroft(DFS *dfs)
 			{
 				partition *Y = *it;
 
-				// for which X ∩ Y is nonempty and Y \ X is nonempty do
-				partition *inter = cap(X, Y);
+				// for which X ∩ Y is nonempty and Y \ X is nonempty
+				partition *inter = cap(&X, Y);
 				if (inter->size() == 0)
 				{
 					delete inter;
 					continue;
 				}
 
-				partition *m = mod(Y, X);
+				partition *m = mod(Y, &X);
 				if (m->size() == 0)
 				{
 					delete m;
@@ -167,12 +188,23 @@ DFS *hapcroft(DFS *dfs)
 				//replace Y in P by the two sets X ∩ Y and Y \ X
 				*it = inter;
 				P->insert(m);
+				std::unique_ptr<partition> delme(Y);
 
 				// if Y is in W
-				auto yit = W->find(Y); // obviously not right now...
-				if (yit == W->end())
+				auto aend = W->end();
+				auto ait = W->begin();
+				for (; ait != aend; ++ait)
+				{
+					if (parts_equal(*ait, Y))
+					{
+						break;
+					}
+				}
+				if (ait != aend())
 				{
 					// replace Y in W by the same two sets
+					*ait = inter;
+					W->insert(m);
 				}
 				else
 				{
@@ -188,7 +220,6 @@ DFS *hapcroft(DFS *dfs)
 						W->insert(m);
 					}
 				}
-				delete Y;
 			}
 		}
 	}

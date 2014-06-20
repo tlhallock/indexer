@@ -10,6 +10,6 @@
 
 #include "parser/fsm/DFS.h"
 
-DFS *hapcroft(DFS *dfs);
+DFS *hopcroft(DFS *dfs);
 
 #endif /* HAPCROFT_H_ */
