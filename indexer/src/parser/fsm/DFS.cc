@@ -7,26 +7,33 @@
 
 #include "parser/fsm/DFS.h"
 
+DFS::DFS(int num_states_, int** _delta, const std::set<int>& _accept_states) :
+	state(0),
+	num_states(num_states_),
+	delta(_delta),
+	accept_states((bool *) calloc (num_states_, sizeof (*accept_states)))
+{
+	auto end = _accept_states.end();
+	for (auto it = _accept_states.begin(); it != end; ++it)
+	{
+		accept_states[*it] = true;
+	}
+}
+
 DFS::~DFS()
 {
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < kNumChars; i++)
 	{
 		free(delta[i]);
 	}
 	free(delta);
-}
 
-DFS::DFS(int** _delta, const std::set<int>& _accept_states) :
-	state(0),
-	delta(_delta),
-	accept_states(_accept_states)
-{
-
+	free(accept_states);
 }
 
 bool DFS::accepting() const
 {
-	return accept_states.find(state) != accept_states.end();
+	return accept_states[state];
 }
 
 void DFS::next(char c)
@@ -183,4 +190,19 @@ int get_index(CHARACTER c)
 		default:
 			return -1;
 	}
+}
+
+int DFS::get_num_states() const
+{
+	return num_states;
+}
+
+const bool* DFS::get_accepting() const
+{
+	return accept_states;
+}
+
+const int** DFS::get_delta() const
+{
+	return delta;
 }

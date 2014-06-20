@@ -17,17 +17,21 @@ constexpr int kNumChars = (2 * 26 + 10 + strlen(get_settings().get_delims()));
 class DFS
 {
 public:
-	DFS(int **delta, const std::set<int> &accept_states);
+	DFS(int num_states, int **delta, const std::set<int> &accept_states);
 	virtual ~DFS();
 
 	bool accepting() const;
 	void next(char c);
 
+	int get_num_states() const;
+	const bool *get_accepting() const;
+	const int **get_delta() const;
 private:
 	int state;
 	int **delta;
 
-	std::set<int> accept_states;
+	int num_states;
+	bool *accept_states;
 };
 
 int **create_delta(int num_states);
